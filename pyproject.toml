@@ -26,6 +26,8 @@ dependencies=[
     # Local LM Engines
     "torch>=1.13.0",
     "transformers>=4.30.2",
+    "sentencepiece",
+    "accelerate"
 
 ]
 requires-python=">=3.8.0"

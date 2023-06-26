@@ -130,7 +130,7 @@ class GPTNeo2B(HuggingFaceTextGenerationLMEngine):
 @singleton
 class StableLMBase3B(HuggingFaceTextGenerationLMEngine):
     name = ("StableLM 3B", "stablelm-3B")
-    def __init__(self, device: Optional[str] = None) -> None:
+    def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("stabilityai/stablelm-base-alpha-3b", device=device)
 
 
@@ -138,5 +138,5 @@ class StableLMBase3B(HuggingFaceTextGenerationLMEngine):
 @singleton
 class StableLMBase7B(HuggingFaceTextGenerationLMEngine):
     name = ("StableLM 7B", "stablelm-7B")
-    def __init__(self, device: Optional[str] = None) -> None:
+    def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("stabilityai/stablelm-base-alpha-7b", device=device)
