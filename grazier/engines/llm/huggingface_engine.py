@@ -15,6 +15,7 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
             model=model,
             framework="pt",
             device=self.device,
+            trust_remote_code=True,
         )
 
     def call(
@@ -52,6 +53,18 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
         outputs = [g["generated_text"].strip() for g in outputs]  # type: ignore
 
         return outputs
+
+
+    @staticmethod
+    def from_hub_model(modelstr: str) -> 'HuggingFaceTextGenerationLMEngine':
+        class _RemoteHFModel(HuggingFaceTextGenerationLMEngine):
+            name = (modelstr, modelstr)
+            def __init__(self, device: Optional[str] = None):
+                super().__init__(modelstr, device=device)
+
+        _cf_class = singleton(_RemoteHFModel)
+        return _cf_class
+
 
 
 @register_engine

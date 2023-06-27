@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
+import logging
+from huggingface_hub import HfApi, ModelFilter
+
 from grazier.utils.pytorch import select_device
 
 
@@ -60,6 +63,13 @@ class LLMEngine(ABC):
             return LM_ENGINES[typestr](**kwargs)  # type: ignore
         elif typestr in LM_ENGINES_CLI:
             return LM_ENGINES_CLI[typestr](**kwargs)  # type: ignore
+
+        logging.info(f"Failed to find local LLM matching {typestr}. Fetching remote LLMs...")
+        api = HfApi()
+        models = list(api.list_models(filter=ModelFilter(model_name=typestr, task='text-generation')))
+        if len(models) > 0:
+            return HuggingFaceTextGenerationLMEngine.from_hub_model(typestr)(**kwargs)
+
         raise ValueError(f"Invalid language model type: {typestr}")
 
 LM_ENGINES: Dict[str, Type[LLMEngine]] = {}
