@@ -153,3 +153,62 @@ class StableLMBase7B(HuggingFaceTextGenerationLMEngine):
     name = ("StableLM 7B", "stablelm-7B")
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("stabilityai/stablelm-base-alpha-7b", device=device)
+
+
+@register_engine
+@singleton
+class OPT125M(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 125M", "opt-125M")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-125m", device=device)
+
+@register_engine
+@singleton
+class OPT350M(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 350M", "opt-350M")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-350m", device=device)
+
+@register_engine
+@singleton
+class OPT1x3B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 1.3B", "opt-1.3b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-1.3b", device=device)
+
+@register_engine
+@singleton
+class OPT2x7B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 2.7B", "opt-2.7b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-2.7b", device=device)
+
+
+@register_engine
+@singleton
+class OPT6x7B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 6.7B", "opt-6.7b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-6.7b", device=device)
+
+
+@register_engine
+@singleton
+class OPT13B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 13B", "opt-13b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-13b", device=device)
+
+@register_engine
+@singleton
+class OPT30B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 30B", "opt-30b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-30b", device=device)
+
+@register_engine
+@singleton
+class OPT66B(HuggingFaceTextGenerationLMEngine):
+    name = ("OPT 66B", "opt-66b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("facebook/opt-66b", device=device)
