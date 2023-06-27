@@ -23,7 +23,7 @@ From Huggingface
 
 From Facebook (via Huggingface)
 - Llama (7B, 13B, 30B, 65B) (Completion Engine)
-- OPT (66B) (Completion Engine)
+- OPT (125M, 350M, 1.3B, 2.7B, 6.7B, 13B, 30B, 66B) (Completion Engine)
 
 From Stanford (via Huggingface)
 - Alpaca (7B) (Chat Engine)
@@ -53,6 +53,8 @@ For completion engines, you can use the `LLMEngine` class:
 ```python
 from grazier import LLMEngine
 
+LLMEngine.list_models()
+['gptj-6B', 'gpt2', 'gpt2-med', 'gpt2-lg', 'gpt2-xl', 'distilgpt2', 'gptneo-125M', 'gptneo-1.3B', 'gptneo-2.7B', 'stablelm-3B', 'stablelm-7B', 'opt-125M', 'opt-350M', 'opt-1.3b', 'opt-2.7b', 'opt-6.7b', 'opt-13b', 'opt-30b', 'opt-66b', 'llama-7B', 'llama-13B', 'llama-30B', 'llama-65B', 'gpt3-davinci3', 'gpt3-davinci2', 'gpt3-curie', 'gpt3-babbage', 'gpt3-ada', 'palm']
 gpt2 = LLMEngine.from_string("gpt2")
 completion = gpt2("I enjoy walking with my cute dog, but sometimes he gets scared and")
 print(completion)
@@ -68,6 +70,8 @@ conversation.add_turn("Hi, how are you?", speaker=Speaker.USER)
 conversation.add_turn("I am doing well, how about you?", speaker=Speaker.AI)
 conversation.add_turn("What are you planning to do today?", speaker=Speaker.USER)
 
+LLMChat.list_models()
+['claude', 'claude-100k', 'claude-instant', 'claude-instant-100k', 'bard', 'koala-7b', 'koala-13b-v1', 'koala-13b-v2', 'vicuna-7b', 'vicuna-13b', 'alpaca-13b', 'chat-gpt', 'gpt4', 'gpt4-32k', 'stablelm-3b', 'stablelm-7b', 'palm']
 gpt4 = LLMChat.from_string("gpt4")
 next_turn = gpt4(conversation)
 
