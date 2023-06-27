@@ -18,7 +18,7 @@ def wrap_chat_llm_engine(cls) -> Type[LLMEngine]: # type: ignore
 
     class _WrappedEngine(LLMEngine):
 
-        name = (f'{cls.name[0]} (Chat)', f'{cls.name[1]}-chat')
+        name = (f'{cls.name[0]} (Chat)', f'{cls.name[1]}')
 
         def __init__(self, **kwargs: Any) -> None:
             super().__init__(device="defer")

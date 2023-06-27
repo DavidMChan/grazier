@@ -19,35 +19,22 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
         )
 
     def call(
-        self, prompt: str, n_completions: int = 1, temperature: Optional[float] = None, **kwargs: Any
+        self, prompt: str, n_completions: int = 1, **kwargs: Any
     ) -> List[str]:
-        if temperature is not None and temperature > 0:
-            outputs = self._generator(
+
+        # Handle the kwargs
+        _params = {
+            'max_new_tokens': kwargs.get("max_new_tokens", kwargs.pop('max_tokens', 256)),
+            'min_new_tokens': kwargs.get("min_new_tokens", 10),
+            'num_return_sequences': n_completions,
+            'temperature': kwargs.get("temperature", None),
+            'return_full_text': False
+        } | kwargs
+
+        outputs = self._generator(
                 prompt,
-                max_new_tokens=256,
-                min_new_tokens=10,
-                num_return_sequences=n_completions,
-                do_sample=True,
-                temperature=temperature,
-                return_full_text=False,
-            )
-        elif n_completions > 1:
-            outputs = self._generator(
-                prompt,
-                max_new_tokens=256,
-                min_new_tokens=10,
-                num_return_sequences=n_completions,
-                do_sample=True,
-                return_full_text=False,
-            )
-        else:
-            outputs = self._generator(
-                prompt,
-                max_new_tokens=256,
-                min_new_tokens=10,
-                num_return_sequences=n_completions,
-                do_sample=False,
-                return_full_text=False,
+                do_sample=n_completions > 1,
+                **_params,
             )
 
         outputs = [g["generated_text"].strip() for g in outputs]  # type: ignore
