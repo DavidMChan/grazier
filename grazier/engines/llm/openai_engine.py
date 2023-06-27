@@ -35,10 +35,10 @@ class OpenAICompletionLLMEngine(LLMEngine):
         )
     )
     def call(
-        self, prompt: str, n_completions: int = 1, temperature: Optional[float] = None, **kwargs: Any
+        self, prompt: str, n_completions: int = 1, **kwargs: Any
     ) -> List[str]:
         cp = openai.Completion.create(
-            model=self._model, prompt=prompt, temperature=temperature, max_tokens=256, n=n_completions, **kwargs
+            model=self._model, prompt=prompt, n=n_completions, **kwargs
         )  # type: ignore
         OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
         return [i.text for i in cp.choices]  # type: ignore

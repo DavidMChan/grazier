@@ -19,7 +19,7 @@ class AnthropicLMEngine(LLMChat):
     def _completion(self, prompt: str, **kwargs: Any) -> Any:
         kwargs = {
             "temperature": kwargs.get("temperature", 0.7),
-            "max_tokens_to_sample": kwargs.get("max_tokens_to_sample", 256),
+            "max_tokens_to_sample": kwargs.get("max_tokens_to_sample", kwargs.pop("max_tokens", 256)),
             "model": self._model,
             "prompt": prompt,
         } | kwargs

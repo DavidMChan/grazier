@@ -23,32 +23,21 @@ class HuggingFaceLlamaLMEngine(LLMEngine):
         )
 
     def call(
-        self, prompt: str, n_completions: int = 1, temperature: Optional[float] = None, **kwargs: Any
+        self, prompt: str, n_completions: int = 1, **kwargs: Any
     ) -> List[str]:
         input = self.tokenizer(prompt, return_tensors="pt").input_ids.to(self._generator.device)
 
-        # Select the generation process based on the temperature
-        if temperature is not None and temperature > 0:
-            outputs = self._generator.generate(
+        # Handle the kwargs
+        _params = {
+            'max_new_tokens': kwargs.get("max_new_tokens", kwargs.pop('max_tokens', self._max_new_tokens)),
+            'num_return_sequences': n_completions,
+            'temperature': kwargs.get("temperature", None),
+        } | kwargs
+
+        outputs = self._generator.generate(
                 input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                temperature=temperature,
-                do_sample=True,
-            )
-        elif n_completions > 1:
-            outputs = self._generator.generate(
-                input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                do_sample=True,
-            )
-        else:
-            outputs = self._generator.generate(
-                input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                do_sample=False,
+                do_sample=n_completions > 1,
+                **_params,
             )
 
         # Strip the prompt from the output

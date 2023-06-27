@@ -19,7 +19,8 @@ class VertexLLMEngine(LLMEngine):
 
         self._model = TextGenerationModel.from_pretrained(model)
         self._parameters = {
-            "max_output_tokens": 256,  # Token limit determines the maximum amount of text output.
+            # Token limit determines the maximum amount of text output.
+            "max_output_tokens": kwargs.pop('max_output_tokens', kwargs.pop('max_tokens', 256)),
             "top_p": 0.95,  # Tokens are selected from most probable to least until the sum of their probabilities equals the top_p value.
             "top_k": 40,  # A top_k of 1 means the selected token is the most probable among all tokens.
         } | kwargs
@@ -32,11 +33,20 @@ class VertexLLMEngine(LLMEngine):
         return self._model.predict(*args, **kwargs)
 
     def call(
-        self, prompt: str, n_completions: int = 1, temperature: Optional[float] = None, **kwargs: Any
+        self, prompt: str, n_completions: int = 1, **kwargs: Any
     ) -> List[str]:
+
+        # Normalize kwargs from openai to vertexai (some common parameters are different)
+        kwargs = self._parameters | {
+            "max_output_tokens": kwargs.pop('max_output_tokens', kwargs.pop('max_tokens', 256)),
+            "temperature": kwargs.pop('temperature', 1.0),
+        } | kwargs
+
+
         return [
             self._rate_limited_model_predict(
-                prompt, temperature=temperature if temperature is not None else 1.0, **self._parameters, **kwargs
+                prompt,
+                **kwargs
             ).text  # type: ignore
             for _ in range(n_completions)
         ]

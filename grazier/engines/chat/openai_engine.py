@@ -47,12 +47,14 @@ class OpenAIChatEngine(LLMChat):
                 "content": turn.text,
             })
 
+        # Update temperature and max_tokens
+        kwargs["temperature"] = kwargs.get("temperature", 0.9)
+        kwargs["max_tokens"] = kwargs.get("max_tokens", 150)
+
         # Call the OpenAI API
         cp = self._retry_call(
                 model=self._model,
                 messages=messages,
-                temperature=kwargs.get("temperature", 0.9),
-                max_tokens=kwargs.get("max_tokens", 150),
                 n=n_completions,
                 **kwargs,
         )  # type: ignore

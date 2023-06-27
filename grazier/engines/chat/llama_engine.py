@@ -37,45 +37,30 @@ class LlamaLMEngine(LLMChat):
         prompt, last_prompt_is_user = self._build_prompt_from_conversation(conversation)
 
         input = self.tokenizer(prompt, return_tensors="pt").input_ids.to(self._generator.device)
-        temperature = kwargs.get("temperature", None)
 
-        print(prompt)
+        # Handle the kwargs
+        _params = {
+            'max_new_tokens': kwargs.get("max_new_tokens", kwargs.pop('max_tokens', self._max_new_tokens)),
+            'num_return_sequences': n_completions,
+            'temperature': kwargs.get("temperature", None),
+        } | kwargs
 
-        # Select the generation process based on the temperature
-        if temperature is not None and temperature > 0:
-            outputs = self._generator.generate(
+        outputs = self._generator.generate(
                 input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                temperature=temperature,
-                do_sample=True,
-            )
-        elif n_completions > 1:
-            outputs = self._generator.generate(
-                input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                do_sample=True,
-            )
-        else:
-            outputs = self._generator.generate(
-                input,
-                max_new_tokens=self._max_new_tokens,
-                num_return_sequences=n_completions,
-                do_sample=False,
+                do_sample=n_completions > 1,
+                **_params,
             )
 
         # Strip the prompt from the output
         outputs_filtered = outputs[:, input.shape[-1]:]
         # Decode and return the output
         outputs_filtered = self.tokenizer.batch_decode(outputs_filtered, skip_special_tokens=True, clean_up_tokenization_spaces=False)
-        outputs_no_filter = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
-        print(outputs_no_filter)
 
         # Pick out the last continued turn
-        outputs = self._extract_last_turn(outputs_filtered, last_prompt_is_user)
+        # NOTE: This has been removed, since we really do want to return everything.
+        # outputs = self._extract_last_turn(outputs_filtered, last_prompt_is_user)
 
-        return [ConversationTurn(text=o, speaker=Speaker.AI if last_prompt_is_user else Speaker.USER) for o in outputs]
+        return [ConversationTurn(text=o, speaker=Speaker.AI if last_prompt_is_user else Speaker.USER) for o in outputs_filtered]
 
 
 

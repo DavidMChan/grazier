@@ -36,6 +36,7 @@ class VertexLLMEngine(LLMChat):
         chat = self._model.start_chat(
             context=context,
             examples=examples,
+            **kwargs
         )
         response = chat.send_message(prompt).text
 
@@ -69,11 +70,16 @@ class VertexLLMEngine(LLMChat):
         else:
             examples = []
 
+        # Normalize kwargs from openai to vertexai (some common parameters are different)
+        kwargs = self._parameters | {
+            "max_output_tokens": kwargs.pop('max_output_tokens', kwargs.pop('max_tokens', 256)),
+            "temperature": kwargs.pop('temperature', 1.0),
+        } | kwargs
+
+
         return [
             ConversationTurn(self._rate_limited_model_predict(
                 (context, examples, non_system_turns[-1].text),
-                temperature=kwargs.get("temperature", 1.0),
-                **self._parameters,
                 **kwargs
             ), speaker=Speaker.AI)  # type: ignore
             for _ in range(n_completions)
