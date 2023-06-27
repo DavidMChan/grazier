@@ -5,11 +5,11 @@ except ImportError:
     ChatModel = None
     InputOutputTextPair = None
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ratelimit import limits, sleep_and_retry
 
-from grazier.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
 from grazier.utils.python import singleton
 
 

@@ -78,8 +78,6 @@ class LLMChat(ABC):
         return f"{self.__class__.__name__}({self.name[0]})"
 
 
-
-
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMChat":
 
@@ -91,6 +89,10 @@ class LLMChat(ABC):
 
         raise ValueError(f"Invalid language model type: {typestr}. Valid types are: {list(LM_CHAT_ENGINES_CLI.keys())}")
 
+    @staticmethod
+    def list_models() -> List[str]:
+        return list(LM_CHAT_ENGINES_CLI.keys())
+
 LM_CHAT_ENGINES: Dict[str, Type[LLMChat]] = {}
 LM_CHAT_ENGINES_CLI: Dict[str, Type[LLMChat]] = {}
 
@@ -101,9 +103,9 @@ def register_engine(cls: T) -> T:
     return cls
 
 
+from grazier.engines.chat.anthropic_engine import *  # noqa: F403, E402
+from grazier.engines.chat.bard_engine import *  # noqa: F403, E402
 from grazier.engines.chat.llama_engine import *  # noqa: F403, E402
 from grazier.engines.chat.openai_engine import *  # noqa: F403, E402
 from grazier.engines.chat.stable_lm_engine import *  # noqa: F403, E402
-from grazier.engines.chat.anthropic_engine import * # noqa: F403, E402
 from grazier.engines.chat.vertex_engine import *  # noqa: F403, E402
-from grazier.engines.chat.bard_engine import *  # noqa: F403, E402

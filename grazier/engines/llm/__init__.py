@@ -1,7 +1,7 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
-import logging
 from huggingface_hub import HfApi, ModelFilter
 
 from grazier.utils.pytorch import select_device
@@ -54,8 +54,6 @@ class LLMEngine(ABC):
         return f"{self.__class__.__name__}({self.name[0]})"
 
 
-
-
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMEngine":
 
@@ -71,6 +69,11 @@ class LLMEngine(ABC):
             return HuggingFaceTextGenerationLMEngine.from_hub_model(typestr)(**kwargs)
 
         raise ValueError(f"Invalid language model type: {typestr}")
+
+
+    @staticmethod
+    def list_models() -> List[str]:
+        return list(LM_ENGINES_CLI.keys())
 
 LM_ENGINES: Dict[str, Type[LLMEngine]] = {}
 LM_ENGINES_CLI: Dict[str, Type[LLMEngine]] = {}

@@ -20,22 +20,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import asyncio
 import json
 import logging
 import os
 import random
 import re
 import string
-import time
-from typing import Any, List, Optional, Dict
+from typing import Any, Dict, List, Optional
 
-import requests
 import httpx
-import asyncio
 
-
-from grazier.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
-from grazier.utils.python import singleton, retry
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.utils.python import retry, singleton
 
 
 class Chatbot:
@@ -46,7 +43,7 @@ class Chatbot:
     def __init__(
         self,
         session_id: str,
-        proxy: dict = None,
+        proxy: Optional[dict] = None,
         timeout: int = 20,
     ):
         self.loop = asyncio.get_event_loop()
@@ -101,7 +98,7 @@ class AsyncChatbot:
     def __init__(
         self,
         session_id: str,
-        proxy: dict = None,
+        proxy: Optional[dict] = None,
         timeout: int = 20,
     ):
         headers = {
@@ -127,7 +124,7 @@ class AsyncChatbot:
     async def create(
         cls,
         session_id: str,
-        proxy: dict = None,
+        proxy: Optional[dict] = None,
         timeout: int = 20,
     ) -> "AsyncChatbot":
         instance = cls(session_id, proxy, timeout)

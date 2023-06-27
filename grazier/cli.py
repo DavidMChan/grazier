@@ -10,8 +10,8 @@ def main() -> None:
 @main.command()
 def list_engines() -> None:
     """List available engines."""
-    from grazier.engines.llm import LM_ENGINES_CLI
     from grazier.engines.chat import LM_CHAT_ENGINES_CLI
+    from grazier.engines.llm import LM_ENGINES_CLI
 
     print("Available LLM engines (Completion):")
 
