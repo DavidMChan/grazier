@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
-from grazier.engines.llm import register_engine as register_llm_engine
+from grazier.engines.llm import register_chat_engine
 from grazier.utils.pytorch import select_device
 
 
@@ -108,7 +108,7 @@ def register_engine(cls: T) -> T:
     LM_CHAT_ENGINES_CLI[cls.name[1].lower()] = cls # type: ignore
 
     # Register the engine as an LLM Engine as well
-    register_llm_engine(wrap_chat_llm_engine(cls))
+    register_chat_engine(wrap_chat_llm_engine(cls))
 
     return cls
 
