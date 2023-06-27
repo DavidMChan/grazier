@@ -28,8 +28,8 @@ class OpenAIChatEngine(LLMChat):
             openai.error.AuthenticationError,
         )
     )
-    def _retry_call(self, *args, **kwargs):
-        return openai.ChatCompletion.create(*args, **kwargs)
+    def _retry_call(self, *args: Any, **kwargs: Any) -> Any:
+        return openai.ChatCompletion.create(*args, **kwargs) # type: ignore
 
 
     def call(

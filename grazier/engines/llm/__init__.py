@@ -31,11 +31,10 @@ class LLMEngine(ABC):
         self,
         prompt: str,
         n_completions: int = 1,
-        temperature: Optional[float] = None,
         **kwargs: Any
     ) -> List[str]:
         prompt = self.prompt_prefix + prompt + self.prompt_suffix
-        return self.call(prompt, n_completions, temperature, **kwargs)
+        return self.call(prompt, n_completions, **kwargs)
 
 
     @abstractmethod
@@ -43,7 +42,6 @@ class LLMEngine(ABC):
         self,
         prompt: str,
         n_completions: int = 1,
-        temperature: Optional[float] = None,
         **kwargs: Any
     ) -> List[str]:
         raise NotImplementedError()

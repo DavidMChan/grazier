@@ -1,5 +1,5 @@
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Type
 
 from transformers.pipelines import pipeline
 
@@ -56,14 +56,14 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
 
 
     @staticmethod
-    def from_hub_model(modelstr: str) -> 'HuggingFaceTextGenerationLMEngine':
+    def from_hub_model(modelstr: str) -> Type['HuggingFaceTextGenerationLMEngine']:
         class _RemoteHFModel(HuggingFaceTextGenerationLMEngine):
             name = (modelstr, modelstr)
             def __init__(self, device: Optional[str] = None):
                 super().__init__(modelstr, device=device)
 
         _cf_class = singleton(_RemoteHFModel)
-        return _cf_class
+        return _cf_class # type: ignore
 
 
 

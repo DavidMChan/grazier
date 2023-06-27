@@ -16,7 +16,7 @@ class AnthropicLMEngine(LLMChat):
         self._model = model
 
     @retry()
-    def _completion(self, prompt, **kwargs) -> Any:
+    def _completion(self, prompt: str, **kwargs: Any) -> Any:
         kwargs = {
             "temperature": kwargs.get("temperature", 0.7),
             "max_tokens_to_sample": kwargs.get("max_tokens_to_sample", 256),
@@ -66,21 +66,19 @@ class AnthropicLMEngine(LLMChat):
 
         return [ConversationTurn(text=s.strip(), speaker=Speaker.AI) for s in samples]
 
-    def best(self, prompt: str) -> str:
-        return self(prompt, n_completions=1, temperature=0.0)[0]
 
 @register_engine
 @singleton
 class Claude(AnthropicLMEngine):
     name = ("Claude", "claude")
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("claude-1")
 
 @register_engine
 @singleton
 class Claude100K(AnthropicLMEngine):
     name = ("Claude 100K", "claude-100k")
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("claude-1-100k")
 
 
@@ -88,12 +86,12 @@ class Claude100K(AnthropicLMEngine):
 @singleton
 class ClaudeInstant(AnthropicLMEngine):
     name = ("Claude Instant", "claude-instant")
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("claude-instant-1")
 
 @register_engine
 @singleton
 class ClaudeInstant100K(AnthropicLMEngine):
     name = ("Claude Instant 100K", "claude-instant-100k")
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("claude-instant-1-100k")

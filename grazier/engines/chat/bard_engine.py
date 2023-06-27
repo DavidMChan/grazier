@@ -51,7 +51,7 @@ class Chatbot:
             AsyncChatbot.create(session_id, proxy, timeout),
         )
 
-    def save_conversation(self, file_path: str, conversation_name: str):
+    def save_conversation(self, file_path: str, conversation_name: str) -> Any:
         return self.loop.run_until_complete(
             self.async_chatbot.save_conversation(file_path, conversation_name),
         )
@@ -116,7 +116,7 @@ class AsyncChatbot:
         self.choice_id = ""
         self.session_id = session_id
         self.session = httpx.AsyncClient(proxies=self.proxy)
-        self.session.headers = headers
+        self.session.headers = headers # type: ignore
         self.session.cookies.set("__Secure-1PSID", session_id)
         self.timeout = timeout
 
@@ -194,7 +194,7 @@ class AsyncChatbot:
                 return True
         return False
 
-    async def __get_snlm0e(self):
+    async def __get_snlm0e(self) -> str:
         # Find "SNlM0e":"<ID>"
         if not self.session_id or self.session_id[-1] != ".":
             raise Exception(
@@ -247,7 +247,7 @@ class AsyncChatbot:
         )
         chat_data = json.loads(resp.content.splitlines()[3])[0][2]
         if not chat_data:
-            return {"content": f"Google Bard encountered an error: {resp.content}."}
+            return {"content": f"Google Bard encountered an error: {resp.content!r}."}
         json_chat_data = json.loads(chat_data)
         images = []
         if len(json_chat_data) >= 3:
@@ -280,7 +280,12 @@ class BardEngine(LLMChat):
     ) -> None:
         super().__init__(device="api")
 
-        self._chatbot = Chatbot(session_id=os.environ.get("GOOGLE_BARD_SESSION_ID", None))
+        session_id = os.environ.get("GOOGLE_BARD_SESSION_ID", None)
+        if session_id is None:
+            raise Exception(
+                "GOOGLE_BARD_SESSION_ID environment variable not found. Please add it to your environment variables.",
+            )
+        self._chatbot = Chatbot(session_id=session_id)
 
     def call(
         self, conversation: Conversation, n_completions: int = 1, **kwargs: Any

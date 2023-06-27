@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
 
+from grazier.engines.llm import register_engine as register_llm_engine
 from grazier.utils.pytorch import select_device
 
 
-class Speaker:
+class Speaker(Enum):
     USER = 'user'
     AI = 'ai'
     SYSTEM = 'system'
@@ -20,12 +22,15 @@ class Conversation:
     def __init__(self, turns: Optional[List[Union[str, ConversationTurn]]] = None):
         if turns is not None:
             # Convert strings to ConversationTurns
-            turns = [ConversationTurn(text=t, speaker=Speaker.USER) if isinstance(t, str) else t for t in turns]
+            self.turns = [ConversationTurn(text=t, speaker=Speaker.USER) if isinstance(t, str) else t for t in turns]
+        else:
+            self.turns = []
 
-        self.turns = turns or []
-
-    def add_turn(self, text: str, speaker: Speaker = Speaker.USER) -> None:
-        self.turns.append(ConversationTurn(text=text, speaker=speaker))
+    def add_turn(self, text: Union[str, ConversationTurn], speaker: Optional[Speaker] = None) -> None:
+        if isinstance(text, str):
+            self.turns.append(ConversationTurn(text=text, speaker=speaker or Speaker.USER))
+        else:
+            self.turns.append(ConversationTurn(text=text.text, speaker=speaker or text.speaker))
 
     def __repr__(self) -> str:
         # TODO: Make this more readable
@@ -98,8 +103,13 @@ LM_CHAT_ENGINES_CLI: Dict[str, Type[LLMChat]] = {}
 
 T = TypeVar("T")
 def register_engine(cls: T) -> T:
+    from grazier.engines.llm.chat_engine import wrap_chat_llm_engine
     LM_CHAT_ENGINES[cls.name[0].lower()] = cls # type: ignore
     LM_CHAT_ENGINES_CLI[cls.name[1].lower()] = cls # type: ignore
+
+    # Register the engine as an LLM Engine as well
+    register_llm_engine(wrap_chat_llm_engine(cls))
+
     return cls
 
 
