@@ -1,6 +1,6 @@
 [project]
-name = 'llmit'
-version = '0.0.1'
+name = 'grazier'
+version = '0.0.2'
 description = 'A tool for calling (and calling out to) large language models.'
 authors = [
     {name='David Chan', email='davidchan@berkeley.edu'}
@@ -11,12 +11,6 @@ dependencies=[
     "rich",
     "python-dotenv",
     "ratelimit",
-    "packaging",
-
-    # Dev dependencies
-    "pytest",
-    "ruff",
-    "mypy",
 
     # LM Engines
     "openai",
@@ -30,10 +24,49 @@ dependencies=[
     "accelerate"
 
 ]
+license = { file = "LICENSE" }
 requires-python=">=3.8.0"
+readme = "README.md"
+keywords = [
+  "language-models",
+  "api",
+  "transformers",
+  "huggingface",
+  "openai",
+  "anthropic",
+  "gpt3",
+  "gpt-j",
+  "gpt-neo",
+  "gpt4",
+  "vertex",
+  "palm",
+  "bard",
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Development Status :: 3 - Alpha",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+  "Typing :: Typed"
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "mypy"]
+
 
 [project.scripts]
-llmit = "llmit.cli:main"
+grazier = "grazier.cli:main"
+
+[project.urls]
+homepage = "https://github.com/DavidMChan/grazier"
+documentation = "https://github.com/DavidMChan/grazier"
+repository = "https://github.com/DavidMChan/grazier"
 
 
 

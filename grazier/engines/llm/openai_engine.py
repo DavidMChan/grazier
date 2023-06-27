@@ -5,8 +5,8 @@ from typing import Any, List, Optional
 
 import openai
 
-from llmit.engines.llm import LLMEngine, register_engine
-from llmit.utils.python import retry, singleton
+from grazier.engines.llm import LLMEngine, register_engine
+from grazier.utils.python import retry, singleton
 
 # Setup openai api keys
 openai.organization = os.getenv("OPENAI_API_ORG", None)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
-from llmit.utils.pytorch import select_device
+from grazier.utils.pytorch import select_device
 
 
 class LLMEngine(ABC):
@@ -72,7 +72,7 @@ def register_engine(cls: T) -> T:
     return cls
 
 # Imports for engine modules
-from llmit.engines.llm.huggingface_engine import *  # noqa: F403, E402
-from llmit.engines.llm.llama_engine import *  # noqa: F403, E402
-from llmit.engines.llm.openai_engine import *  # noqa: F403, E402
-from llmit.engines.llm.vertex_engine import *  # noqa: F403, E402
+from grazier.engines.llm.huggingface_engine import *  # noqa: F403, E402
+from grazier.engines.llm.llama_engine import *  # noqa: F403, E402
+from grazier.engines.llm.openai_engine import *  # noqa: F403, E402
+from grazier.engines.llm.vertex_engine import *  # noqa: F403, E402

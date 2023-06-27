@@ -5,8 +5,8 @@ from typing import Any, List, Optional, Tuple
 
 from transformers import LlamaForCausalLM, LlamaTokenizer
 
-from llmit.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from llmit.utils.python import singleton
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.utils.python import singleton
 
 
 class LlamaLMEngine(LLMChat):

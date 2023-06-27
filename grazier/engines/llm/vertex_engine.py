@@ -8,8 +8,8 @@ from typing import Any, Dict, List, Optional
 
 from ratelimit import limits, sleep_and_retry
 
-from llmit.engines.llm import LLMEngine, register_engine
-from llmit.utils.python import singleton
+from grazier.engines.llm import LLMEngine, register_engine
+from grazier.utils.python import singleton
 
 
 class VertexLLMEngine(LLMEngine):

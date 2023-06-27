@@ -5,9 +5,9 @@ from typing import Any, List
 
 import openai
 
-from llmit.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from llmit.engines.llm.openai_engine import OpenAI
-from llmit.utils.python import retry, singleton
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.engines.llm.openai_engine import OpenAI
+from grazier.utils.python import retry, singleton
 
 # Setup openai api keys
 openai.organization = os.getenv("OPENAI_API_ORG", None)

@@ -3,7 +3,7 @@ import logging
 
 import pytest
 
-from llmit.engines.chat import Conversation, LLMChat, Speaker
+from grazier.engines.chat import Conversation, LLMChat, Speaker
 
 
 @pytest.mark.parametrize("engine", ["claude-instant"])

@@ -1,6 +1,6 @@
-# LLMit: Easily call Large Language Models from a unified API
+# Grazier: Easily call Large Language Models from a unified API
 
-LLMit is a Python library for easily calling large language models from a unified API.
+Grazier is a Python library for easily calling large language models from a unified API.
 
 ## Supported Large Language Models
 
@@ -38,9 +38,9 @@ From StabilityAI (via Huggingface)
 
 ## Installation
 
-Llmit can easily be installed using pip:
+Grazier can easily be installed using pip:
 ```bash
-pip install llmit
+pip install grazier
 ```
 
 Each of the LLMs may need additional setup, which you can find in the engine setup section below.
@@ -51,7 +51,7 @@ Each of the LLMs may need additional setup, which you can find in the engine set
 
 For completion engines, you can use the `LLMEngine` class:
 ```python
-from llmit import LLMEngine
+from grazier import LLMEngine
 
 gpt2 = LLMEngine.from_string("gpt2")
 completion = gpt2("I enjoy walking with my cute dog, but sometimes he gets scared and")
@@ -60,7 +60,7 @@ print(completion)
 
 For chat engines, you can use the `LLMChat` class:
 ```python
-from llmit import LLMChat, Conversation, Speaker
+from grazier import LLMChat, Conversation, Speaker
 
 conversation = Conversation()
 conversation.add_turn("You are a funny person.", speaker=Speaker.SYSTEM)
@@ -156,21 +156,21 @@ VICUNA_WEIGHTS_ROOT=<path to the vicuna weights>
 
 ## Citation
 
-If you use LLMit in your work, please cite:
+If you use grazier in your work, please cite:
 
 ```
-@misc{LLMit,
+@misc{grazier,
   author = {David Chan},
-  title = {LLMit: Easily call Large Language Models from a unified API},
+  title = {grazier: Easily call Large Language Models from a unified API},
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
   howpublished = {\url{
-    https://github.com/DavidMChan/llmit
+    https://github.com/DavidMChan/grazier
   }}
 }
 ```
 
 ## License
 
-LLMit is licensed under the terms of the MIT license. See [LICENSE](LICENSE) for more information.
+grazier is licensed under the terms of the MIT license. See [LICENSE](LICENSE) for more information.

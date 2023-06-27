@@ -4,9 +4,9 @@ from typing import Any, List, Optional
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 
-from llmit.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from llmit.utils.python import singleton
-from llmit.utils.pytorch import select_device
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.utils.python import singleton
+from grazier.utils.pytorch import select_device
 
 
 class StopOnTokens(StoppingCriteria):

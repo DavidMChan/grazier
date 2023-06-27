@@ -3,8 +3,8 @@ from typing import Any, List, Optional
 
 from transformers.pipelines import pipeline
 
-from llmit.engines.llm import LLMEngine, register_engine
-from llmit.utils.python import singleton
+from grazier.engines.llm import LLMEngine, register_engine
+from grazier.utils.python import singleton
 
 
 class HuggingFaceTextGenerationLMEngine(LLMEngine):

@@ -1,19 +1,15 @@
 
+
 import logging
-import os
 import random
 
 import pytest
 
-from llmit.engines.llm import LLMEngine
+from grazier.engines.llm import LLMEngine
 
 
-@pytest.mark.parametrize("engine", ["gpt3-davinci3", "gpt3-davinci2", "gpt3-curie", "gpt3-babbage", "gpt3-ada"])
-def test_openai_llm_engine(engine: str) -> None:
-    if not os.getenv("OPENAI_API_ORG", None):
-        pytest.skip("OPENAI_API_ORG not set")
-    if not os.getenv("OPENAI_API_KEY", None):
-        pytest.skip("OPENAI_API_KEY not set")
+@pytest.mark.parametrize("engine", ["palm"])
+def test_vertex_llm_engine(engine: str) -> None:
 
     _engine = LLMEngine.from_string(engine)
     random_number = random.randint(0, 100)

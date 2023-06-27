@@ -4,7 +4,7 @@ import random
 
 import pytest
 
-from llmit.engines.llm import LLMEngine
+from grazier.engines.llm import LLMEngine
 
 
 @pytest.mark.parametrize("engine", [

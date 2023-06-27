@@ -34,8 +34,8 @@ import httpx
 import asyncio
 
 
-from llmit.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
-from llmit.utils.python import singleton, retry
+from grazier.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
+from grazier.utils.python import singleton, retry
 
 
 class Chatbot:

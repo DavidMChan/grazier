@@ -9,8 +9,8 @@ from typing import Any, Dict, List, Optional
 
 from ratelimit import limits, sleep_and_retry
 
-from llmit.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
-from llmit.utils.python import singleton
+from grazier.engines.chat import LLMChat, Conversation, ConversationTurn, Speaker, register_engine
+from grazier.utils.python import singleton
 
 
 class VertexLLMEngine(LLMChat):

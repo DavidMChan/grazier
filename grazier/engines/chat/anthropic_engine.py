@@ -5,8 +5,8 @@ from typing import Any, List
 
 import anthropic
 
-from llmit.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from llmit.utils.python import retry, singleton
+from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.utils.python import retry, singleton
 
 
 class AnthropicLMEngine(LLMChat):

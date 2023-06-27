@@ -1,30 +1,23 @@
 
 import logging
+import os
 import random
 
 import pytest
 
-from llmit.engines.llm import LLMEngine
+from grazier.engines.llm import LLMEngine
 
 
-@pytest.mark.parametrize("engine", [
-    "gptj-6B",
-    "gpt2",
-    "gpt2-med",
-    "gpt2-lg",
-    "gpt2-xl",
-    "distilgpt2",
-    "gptneo-125M",
-    "gptneo-1.3B",
-    "gptneo-2.7B",
-    "stablelm-3B",
-    "stablelm-7B",
-])
-def test_huggingface_llm_engine(engine: str) -> None:
+@pytest.mark.parametrize("engine", ["gpt3-davinci3", "gpt3-davinci2", "gpt3-curie", "gpt3-babbage", "gpt3-ada"])
+def test_openai_llm_engine(engine: str) -> None:
+    if not os.getenv("OPENAI_API_ORG", None):
+        pytest.skip("OPENAI_API_ORG not set")
+    if not os.getenv("OPENAI_API_KEY", None):
+        pytest.skip("OPENAI_API_KEY not set")
+
     _engine = LLMEngine.from_string(engine)
     random_number = random.randint(0, 100)
     response = _engine(f"My name, followed by a colon with the number {random_number} is:")
-
     for r in response:
         assert len(r.strip()) > 0, f"Response is empty: {r}"
         if str(random_number) not in r:

@@ -3,11 +3,11 @@ import logging
 
 import pytest
 
-from llmit.engines.chat import Conversation, LLMChat, Speaker
+from grazier.engines.chat import Conversation, LLMChat, Speaker
 
 
-@pytest.mark.parametrize("engine", ["stablelm-3b"])
-def test_stablelm_llm_engine(engine: str) -> None:
+@pytest.mark.parametrize("engine", ["koala-7b"])
+def test_llama_llm_engine(engine: str) -> None:
     # Construct a conversation
     conversation = Conversation()
     conversation.add_turn("You are an intelligent AI named Jason.", speaker=Speaker.SYSTEM)
