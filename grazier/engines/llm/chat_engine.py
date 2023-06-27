@@ -20,9 +20,9 @@ def wrap_chat_llm_engine(cls) -> Type[LLMEngine]: # type: ignore
 
         name = cls.name
 
-        def __init__(self, device: Optional[str] = None):
-            super().__init__(device=device)
-            self._engine = cls(device=device)
+        def __init__(self, **kwargs: Any) -> None:
+            super().__init__(device="defer")
+            self._engine = cls(**kwargs)
 
         def call(
             self,
