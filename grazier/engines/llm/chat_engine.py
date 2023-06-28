@@ -1,5 +1,5 @@
 
-from typing import Any, List, Optional, Type
+from typing import Any, List, Type
 
 from grazier.engines.chat import Conversation, Speaker
 from grazier.engines.llm import LLMEngine

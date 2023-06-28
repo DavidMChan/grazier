@@ -92,6 +92,7 @@ def register_chat_engine(cls: T) -> T:
     return cls
 
 # Imports for engine modules
+from grazier.engines.llm.ai21_engine import *  # noqa: F403, E402
 from grazier.engines.llm.huggingface_engine import *  # noqa: F403, E402
 from grazier.engines.llm.llama_engine import *  # noqa: F403, E402
 from grazier.engines.llm.openai_engine import *  # noqa: F403, E402
