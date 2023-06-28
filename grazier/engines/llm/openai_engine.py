@@ -1,7 +1,7 @@
 
 import os
 from abc import abstractmethod
-from typing import Any, List, Optional
+from typing import Any, List
 
 import openai
 

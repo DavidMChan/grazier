@@ -4,7 +4,7 @@ try:
 except ImportError:
     TextGenerationModel = None
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ratelimit import limits, sleep_and_retry
 
