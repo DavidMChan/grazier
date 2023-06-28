@@ -62,8 +62,11 @@ class LLMEngine(ABC):
 
         logging.info(f"Failed to find local LLM matching {typestr}. Fetching remote LLMs...")
         api = HfApi()
-        models = list(api.list_models(filter=ModelFilter(model_name=typestr, task='text-generation')))
-        if len(models) > 0:
+        if models := list(
+            api.list_models(
+                filter=ModelFilter(model_name=typestr, task='text-generation')
+            )
+        ):
             return HuggingFaceTextGenerationLMEngine.from_hub_model(typestr)(**kwargs)
 
         raise ValueError(f"Invalid language model type: {typestr}")
