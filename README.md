@@ -35,6 +35,9 @@ From Berkeley (via Huggingface)
 From StabilityAI (via Huggingface)
 - StableLM (7B, 13B) (Chat and Completion Engines)
 
+From AI21
+- Jurassic 2 (Light, Mid, Ultra)
+
 
 ## Installation
 
@@ -156,6 +159,18 @@ LLAMA_WEIGHTS_ROOT=<path to the llama weights>
 ALPACA_WEIGHTS_ROOT=<path to the alpaca weights>
 KOALA_WEIGHTS_ROOT=<path to the koala weights>
 VICUNA_WEIGHTS_ROOT=<path to the vicuna weights>
+```
+
+### AI21 Models (Jurassic)
+For AI21 models, you will need to set the `AI21_API_KEY` environment variable. You can find your API key at
+the [AI21 Studio Dashboard](https://studio.ai21.com/account/api-key). You can set this environment variable in
+your shell or in a `.env` file in the root of your project. For example, in a `.env` file, you would have:
+```bash
+AI21_API_KEY=<your key>
+```
+or on the command line:
+```bash
+export AI21_API_KEY=<your key>
 ```
 
 ## Citation
