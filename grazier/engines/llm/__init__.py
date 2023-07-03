@@ -70,15 +70,16 @@ T = TypeVar("T")
 
 def register_engine(cls: T) -> T:
     LM_ENGINES[cls.name[0]] = cls  # type: ignore
-    LM_ENGINES_CLI[cls.name[1]] = cls  # type: ignore
+    LM_ENGINES_CLI[cls.name[1].lower()] = cls  # type: ignore
     return cls
 
 
 def register_chat_engine(cls: T) -> T:
     LM_ENGINES[cls.name[0]] = cls  # type: ignore
     if cls.name[1] not in LM_ENGINES_CLI:
-        LM_ENGINES_CLI[cls.name[1]] = cls  # type: ignore
-    LM_ENGINES_CLI[f"{cls.name[1]}-chat"] = cls  # type: ignore
+        LM_ENGINES_CLI[cls.name[1].lower()] = cls  # type: ignore
+
+    LM_ENGINES_CLI[f"{cls.name[1]}-chat".lower()] = cls  # type: ignore
 
     return cls
 
