@@ -11,6 +11,7 @@ dependencies=[
     "rich",
     "python-dotenv",
     "ratelimit",
+    "fire", # For weight_diff.py. TODO: Remove this, replace with click
 
     # LM Engines
     "openai",
