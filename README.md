@@ -5,13 +5,13 @@ Grazier is a Python library for easily calling large language models from a unif
 ## Supported Large Language Models
 
 From OpenAI:
-- GPT-4 (Base, 32K) (Chat Engine)
-- GPT-3.5 (ChatGPT) (Chat Engine)
+- GPT-4 (Base, 32K) (Chat and Completion Engines)
+- GPT-3.5 (ChatGPT) (Chat and Completion Engines)
 - GPT-3 (Davinci (v2,v3), Ada, Babbage, Curie) (Completion Engine)
 
 From Anthropic:
-- Claude (Base, 100K) (Chat Engine)
-- Claude Instant (Base, 100K) (Chat Engine)
+- Claude (Base, 100K) (Chat and Completion Engines)
+- Claude Instant (Base, 100K) (Chat and Completion Engines)
 
 From Google/GCP:
 - PaLM (Chat and Completion Engines)
@@ -28,11 +28,11 @@ From Facebook (via Huggingface)
 - OPT (125M, 350M, 1.3B, 2.7B, 6.7B, 13B, 30B, 66B) (Completion Engine)
 
 From Stanford (via Huggingface)
-- Alpaca (7B) (Chat Engine)
+- Alpaca (7B) (Chat and Completion Engines)
 
 From Berkeley (via Huggingface)
-- Koala (7B, 13B_v1, 13B_v2) (Chat Engine)
-- Vicuna (7B, 13B) (Chat Engine)
+- Koala (7B, 13B_v1, 13B_v2) (Chat and Completion Engines)
+- Vicuna (7B, 13B) (Chat and Completion Engines)
 
 From StabilityAI (via Huggingface)
 - StableLM (7B, 13B) (Chat and Completion Engines)
