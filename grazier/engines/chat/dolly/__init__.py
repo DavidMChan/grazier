@@ -1,7 +1,7 @@
 import logging
 from typing import Any, List, Optional
 
-from transformers import AutoModelForCausalLM, TFAutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TFAutoModelForCausalLM
 from transformers.pipelines import PIPELINE_REGISTRY, pipeline
 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
