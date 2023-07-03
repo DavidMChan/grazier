@@ -36,6 +36,45 @@ class Conversation:
         # TODO: Make this more readable
         return f"Conversation({self.turns})"
 
+    def __len__(self) -> int:
+        return len(self.turns)
+
+    def __getitem__(self, i: int) -> ConversationTurn:
+        return self.turns[i]
+
+    def __iter__(self):
+        return iter(self.turns)
+
+    def __add__(self, other: Union[str, ConversationTurn, "Conversation"]) -> "Conversation":
+        if isinstance(other, str):
+            return Conversation([*self.turns, ConversationTurn(text=other, speaker=Speaker.USER)])
+        elif isinstance(other, ConversationTurn):
+            return Conversation([*self.turns, other])
+        else:
+            assert isinstance(other, Conversation)
+            return Conversation(self.turns + other.turns)
+
+    def __radd__(self, other: Union[str, ConversationTurn, "Conversation"]) -> "Conversation":
+        if isinstance(other, str):
+            return Conversation([ConversationTurn(text=other, speaker=Speaker.USER), *self.turns])
+        elif isinstance(other, ConversationTurn):
+            return Conversation([other, *self.turns])
+        else:
+            assert isinstance(other, Conversation)
+            return Conversation(other.turns + self.turns)
+
+    def __iadd__(self, other: Union[str, ConversationTurn, "Conversation"]) -> "Conversation":
+        if isinstance(other, str):
+            self.turns.append(ConversationTurn(text=other, speaker=Speaker.USER))
+        elif isinstance(other, ConversationTurn):
+            self.turns.append(other)
+        else:
+            assert isinstance(other, Conversation)
+            self.turns.extend(other.turns)
+        return self
+
+
+
 
 class LLMChat(ABC):
 
@@ -83,6 +122,11 @@ class LLMChat(ABC):
         return f"{self.__class__.__name__}({self.name[0]})"
 
 
+    @classmethod
+    def configure(cls, *args, **kwargs):
+        raise NotImplementedError("This engine does not support automated configuration.")
+
+
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMChat":
 
@@ -115,6 +159,7 @@ def register_engine(cls: T) -> T:
 
 from grazier.engines.chat.anthropic_engine import *  # noqa: F403, E402
 from grazier.engines.chat.bard_engine import *  # noqa: F403, E402
+from grazier.engines.chat.dolly import *  # noqa: F403, E402
 from grazier.engines.chat.llama_engine import *  # noqa: F403, E402
 from grazier.engines.chat.openai_engine import *  # noqa: F403, E402
 from grazier.engines.chat.stable_lm_engine import *  # noqa: F403, E402

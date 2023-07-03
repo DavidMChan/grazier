@@ -20,6 +20,8 @@ From Huggingface
 - GPT-2 (Base, Medium, Large, XL) (Completion Engine)
 - GPT-Neo (125M, 1.3B, 2.7B) (Completion Engine)
 - GPT-J (6B) (Completion Engine)
+- Falcon (7B, 40B, rw-1B, rw-7B) (Completion Engine)
+- Dolly (v1 - 6B, v2 - 3B, 7B, 12B) (Chat and Completion Engines)
 
 From Facebook (via Huggingface)
 - Llama (7B, 13B, 30B, 65B) (Completion Engine)
@@ -36,7 +38,7 @@ From StabilityAI (via Huggingface)
 - StableLM (7B, 13B) (Chat and Completion Engines)
 
 From AI21
-- Jurassic 2 (Light, Mid, Ultra)
+- Jurassic 2 (Light, Mid, Ultra) (Completion Engines)
 
 
 ## Installation

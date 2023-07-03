@@ -19,6 +19,8 @@ from grazier.engines.llm import LLMEngine
     "gptneo-2.7B",
     "stablelm-3B",
     "stablelm-7B",
+    "falcon-7b",
+    "falcon-rw-1b",
 ])
 def test_huggingface_llm_engine(engine: str) -> None:
     _engine = LLMEngine.from_string(engine)

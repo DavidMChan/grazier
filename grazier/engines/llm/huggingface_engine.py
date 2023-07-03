@@ -1,18 +1,41 @@
 
+import copy
 from typing import Any, List, Optional, Type
 
-from transformers.pipelines import pipeline
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    TFAutoModelForCausalLM,
+    is_tf_available,
+    is_torch_available,
+)
+from transformers.pipelines import PIPELINE_REGISTRY, TextGenerationPipeline, pipeline
 
 from grazier.engines.llm import LLMEngine, register_engine
 from grazier.utils.python import singleton
 
+# Some models are too new, and not directly supported by the text-generation pipeline, but do have support for
+# AutoModelForCausalLM. We can register a new pipeline that doesn't check the model type, and use that instead.
+_tgp = copy.copy(TextGenerationPipeline)
+_tgp.check_model_type = lambda *args, **kwargs: None
+PIPELINE_REGISTRY.register_pipeline(
+    task='text-generation-no-check-models',
+    pipeline_class=_tgp,
+    tf_model = (TFAutoModelForCausalLM,) if is_tf_available() else (),
+    pt_model = (AutoModelForCausalLM,) if is_torch_available() else (),
+    default = {"model": {"pt": ("t5-base", "686f1db"), "tf": ("t5-base", "686f1db")}},
+    type='text'
+)
+
 
 class HuggingFaceTextGenerationLMEngine(LLMEngine):
-    def __init__(self, model: str, device: Optional[str] = None):
+    def __init__(self, model: str, device: Optional[str] = None, override_check_models: bool = False):
         super().__init__(device=device)
+
         self._generator = pipeline(
-            "text-generation",
+            "text-generation" if not override_check_models else 'text-generation-no-check-models',
             model=model,
+            tokenizer=AutoTokenizer.from_pretrained(model),
             framework="pt",
             device=self.device,
             trust_remote_code=True,
@@ -199,3 +222,31 @@ class OPT66B(HuggingFaceTextGenerationLMEngine):
     name = ("OPT 66B", "opt-66b")
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-66b", device=device)
+
+@register_engine
+@singleton
+class Falcon40B(HuggingFaceTextGenerationLMEngine):
+    name = ("Falcon 40B", "falcon-40b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tiiuae/falcon-40b", device=device)
+
+@register_engine
+@singleton
+class Falcon7B(HuggingFaceTextGenerationLMEngine):
+    name = ("Falcon 7B", "falcon-7b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tiiuae/falcon-7b", device=device)
+
+@register_engine
+@singleton
+class FalconRW7B(HuggingFaceTextGenerationLMEngine):
+    name = ("Falcon RW 7B", "falcon-rw-7b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tiiuae/falcon-rw-7b", device=device, override_check_models=True)
+
+@register_engine
+@singleton
+class FalconRW1B(HuggingFaceTextGenerationLMEngine):
+    name = ("Falcon RW 1B", "falcon-rw-1b")
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tiiuae/falcon-rw-1b", device=device, override_check_models=True)

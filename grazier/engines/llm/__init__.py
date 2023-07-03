@@ -51,6 +51,9 @@ class LLMEngine(ABC):
     ) -> str:
         return f"{self.__class__.__name__}({self.name[0]})"
 
+    @classmethod
+    def configure(cls, *args, **kwargs):
+        raise NotImplementedError("This engine does not support automated configuration.")
 
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMEngine":
@@ -72,6 +75,7 @@ class LLMEngine(ABC):
     @staticmethod
     def list_models() -> List[str]:
         return list(LM_ENGINES_CLI.keys())
+
 
 LM_ENGINES: Dict[str, Type[LLMEngine]] = {}
 LM_ENGINES_CLI: Dict[str, Type[LLMEngine]] = {}
