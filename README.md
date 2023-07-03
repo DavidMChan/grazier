@@ -38,6 +38,10 @@ From Berkeley (via Huggingface)
 From StabilityAI (via Huggingface)
 - StableLM (7B, 13B) (Chat and Completion Engines)
 
+From AllenAI (via Huggingface)
+- Tulu (7B, 13B, 30B, 65B) (Chat and Completion Engines)
+- Open Instruct (ShareGPT) (7B, 13B, 30B, 65B) (Chat and Completion Engines)
+
 From AI21
 - Jurassic 2 (Light, Mid, Ultra) (Completion Engines)
 
@@ -146,22 +150,24 @@ Most of the huggingface engines require no additional setup, however, some of th
 with any kind of efficiency (and some require multiple GPUs with large amounts of memory). You can find more details
 about the requirements for each model on the [Huggingface model hub](https://huggingface.co/models).
 
-### Llama, Alpaca, Koala, and Vicuna Engines
+### Llama, Alpaca, Koala, Vicuna and AllenAI Engines
 For these engines, you will need to obtain and postprocess the weights yourself (due to Facebook's licensing). You can
 find the instructions for doing so on each model page:
 - Llama: https://huggingface.co/docs/transformers/main/model_doc/llama
 - Alpaca: https://github.com/tatsu-lab/stanford_alpaca#recovering-alpaca-weights
 - Koala: https://github.com/young-geng/EasyLM/blob/main/docs/koala.md
 - Vicuna: https://github.com/lm-sys/FastChat#vicuna-weights
+- AllenAI: https://huggingface.co/allenai/tulu-65b
 
 Once the weights have been downloaded and processed, you can set the following environment variables to the root
-directory containing a folder for each variant (for example, `root_dir/llama_7B/weights.bin`, the root directory would
-be `root_dir`):
+directory containing a folder for each variant (The format is, `{root_dir}/{model-prefix}/weights.bin`, the root directory would
+be `root_dir`, and the model-prefix is the name of the model, e.g. `tulu-65b`):
 ```bash
 LLAMA_WEIGHTS_ROOT=<path to the llama weights>
 ALPACA_WEIGHTS_ROOT=<path to the alpaca weights>
 KOALA_WEIGHTS_ROOT=<path to the koala weights>
 VICUNA_WEIGHTS_ROOT=<path to the vicuna weights>
+ALLENAI_WEIGHTS_ROOT=<path to the allenai weights>
 ```
 
 ### AI21 Models (Jurassic)

@@ -173,6 +173,45 @@ class AlpacaLMEngine(LlamaLMEngine):
         return [o.split("### Response:" if last_prompt_is_user else "### Instruction:")[0].strip() for o in outputs]
 
 
+class AllenAILlamaLMEngine(LlamaLMEngine):
+    def _build_prompt_from_conversation(self, conversation: Conversation) -> Tuple[str, bool]:
+        # Step 1: Build the prompt from the conversation
+        prompt = ""
+        for idx, turn in enumerate(conversation.turns):
+            if idx == 0 and turn.speaker == Speaker.SYSTEM:
+                prompt += f"{turn.text}\n\n"
+            elif idx == 0:
+                prompt += "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n"
+            elif turn.speaker == Speaker.SYSTEM:
+                logging.warning(
+                    "Tried to add a system turn to the conversation at index != 0. This is not supported an Alpaca style model."
+                )
+
+            if turn.speaker == Speaker.USER:
+                prompt += "<|user|>\n"
+                prompt += turn.text + "\n"
+            elif turn.speaker == Speaker.AI:
+                prompt += "<|assistant|>\n"
+                prompt += turn.text + "\n"
+
+        # Append the next prompt
+        last_prompt_is_user = True
+        if conversation.turns[-1].speaker in (Speaker.USER, Speaker.SYSTEM):
+            prompt += "<|assistant|>\n"
+            last_prompt_is_user = True
+        else:
+            logging.warning(
+                "The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective."
+            )
+            prompt += "<|user|>\n"
+            last_prompt_is_user = False
+
+        return prompt, last_prompt_is_user
+
+    def _extract_last_turn(self, outputs: List[str], last_prompt_is_user: bool) -> List[str]:
+        return [o.split("<|assistant|>" if last_prompt_is_user else "<|user|>")[0].strip() for o in outputs]
+
+
 @register_engine
 @singleton
 class Koala7B(KoalaLMEngine):
@@ -225,3 +264,75 @@ class Alpaca13B(AlpacaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("alpaca_13B", "ALPACA_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class Tulu7B(AllenAILlamaLMEngine):
+    name = ("Tulu (7B)", "tulu-7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tulu-7b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class Tulu13B(AllenAILlamaLMEngine):
+    name = ("Tulu (13B)", "tulu-13b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tulu-13b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class Tulu30B(AllenAILlamaLMEngine):
+    name = ("Tulu (30B)", "tulu-30b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tulu-30b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class Tulu65B(AllenAILlamaLMEngine):
+    name = ("Tulu (65B)", "tulu-65b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("tulu-65b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class OIShareGPT7B(AllenAILlamaLMEngine):
+    name = ("Open Instruct ShareGPT (7B)", "open-instruct-sharegpt-7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("open-instruct-sharegpt-7b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class OIShareGPT13B(AllenAILlamaLMEngine):
+    name = ("Open Instruct ShareGPT (13B)", "open-instruct-sharegpt-13b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("open-instruct-sharegpt-13b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class OIShareGPT30B(AllenAILlamaLMEngine):
+    name = ("Open Instruct ShareGPT (30B)", "open-instruct-sharegpt-30b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("open-instruct-sharegpt-30b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+
+@register_engine
+@singleton
+class OIShareGPT65B(AllenAILlamaLMEngine):
+    name = ("Open Instruct ShareGPT (65B)", "open-instruct-sharegpt-65b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("open-instruct-sharegpt-65b", "ALLENAI_WEIGHTS_ROOT", device=device)
