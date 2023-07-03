@@ -116,7 +116,7 @@ class AsyncChatbot:
         self.choice_id = ""
         self.session_id = session_id
         self.session = httpx.AsyncClient(proxies=self.proxy)
-        self.session.headers = headers # type: ignore
+        self.session.headers = headers  # type: ignore
         self.session.cookies.set("__Secure-1PSID", session_id)
         self.timeout = timeout
 
@@ -270,6 +270,7 @@ class AsyncChatbot:
         self._reqid += 100000
         return results
 
+
 @register_engine
 @singleton
 class BardEngine(LLMChat):
@@ -287,10 +288,7 @@ class BardEngine(LLMChat):
             )
         self._chatbot = Chatbot(session_id=session_id)
 
-    def call(
-        self, conversation: Conversation, n_completions: int = 1, **kwargs: Any
-    ) -> List[ConversationTurn]:
-
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         if len(conversation.turns) != 1:
             raise AssertionError("BARD conversations must have exactly one turn.")
 

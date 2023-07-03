@@ -37,7 +37,7 @@ class StableLMChatEngine(LLMChat):
         if last_turn_is_user:
             output, _, _ = output.partition("<|ASSISTANT|>")
         else:
-            output, _, _  = output.partition("<|USER|>")
+            output, _, _ = output.partition("<|USER|>")
 
         output = (
             output.replace("<|USER|>", "")
@@ -48,12 +48,9 @@ class StableLMChatEngine(LLMChat):
         )
         return output
 
-    def call(
-        self, conversation: Conversation, n_completions: int = 1, **kwargs: Any
-    ) -> List[ConversationTurn]:
-
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         # Build the prompt
-        prompt = ''
+        prompt = ""
         for idx, turn in enumerate(conversation.turns):
             if idx == 0:
                 if turn.speaker != Speaker.SYSTEM:
@@ -62,11 +59,13 @@ class StableLMChatEngine(LLMChat):
                 else:
                     prompt += turn.text
             elif turn.speaker == Speaker.USER:
-                    prompt += f"<|USER|>{turn.text}"
+                prompt += f"<|USER|>{turn.text}"
             elif turn.speaker == Speaker.AI:
                 prompt += f"<|ASSISTANT|>{turn.text}"
             elif turn.speaker == Speaker.SYSTEM:
-                logging.warning(f"System turn detected at index {idx} in conversation {conversation}. This turn will be ignored.")
+                logging.warning(
+                    f"System turn detected at index {idx} in conversation {conversation}. This turn will be ignored."
+                )
 
         # Add the beginning of the last turn
         last_turn_is_user = True
@@ -101,19 +100,26 @@ class StableLMChatEngine(LLMChat):
                 stopping_criteria=StoppingCriteriaList([StopOnTokens()]),
             )
 
-        outputs = [self._decode_tokens(t[inputs['input_ids'].shape[-1]:], last_turn_is_user) for t in tokens]  # type: ignore
-        return [ConversationTurn(text=output, speaker=Speaker.AI if last_turn_is_user else Speaker.USER) for output in outputs]
+        outputs = [self._decode_tokens(t[inputs["input_ids"].shape[-1] :], last_turn_is_user) for t in tokens]  # type: ignore
+        return [
+            ConversationTurn(text=output, speaker=Speaker.AI if last_turn_is_user else Speaker.USER)
+            for output in outputs
+        ]
+
 
 @register_engine
 @singleton
 class StableLM3B(StableLMChatEngine):
     name = ("Stable LM (3B)", "stablelm-3b")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("stabilityai/stablelm-tuned-alpha-3b", device=device)
+
 
 @register_engine
 @singleton
 class StableLM7B(StableLMChatEngine):
     name = ("Stable LM (7B)", "stablelm-7b")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("stabilityai/stablelm-tuned-alpha-7b", device=device)

@@ -1,4 +1,3 @@
-
 import os
 from abc import abstractmethod
 from typing import Any, List
@@ -13,6 +12,7 @@ from grazier.utils.python import retry, singleton
 openai.organization = os.getenv("OPENAI_API_ORG", None)
 openai.api_key = os.getenv("OPENAI_API_KEY", None)
 
+
 class OpenAIChatEngine(LLMChat):
     def __init__(self, model: str):
         super().__init__(device="api")
@@ -23,14 +23,9 @@ class OpenAIChatEngine(LLMChat):
     def cost_per_token(self) -> float:
         raise NotImplementedError()
 
-    @retry(
-        no_retry_on=(
-            openai.error.AuthenticationError,
-        )
-    )
+    @retry(no_retry_on=(openai.error.AuthenticationError,))
     def _retry_call(self, *args: Any, **kwargs: Any) -> Any:
-        return openai.ChatCompletion.create(*args, **kwargs) # type: ignore
-
+        return openai.ChatCompletion.create(*args, **kwargs)  # type: ignore
 
     def call(
         self,
@@ -38,14 +33,21 @@ class OpenAIChatEngine(LLMChat):
         n_completions: int = 1,
         **kwargs: Any,
     ) -> List[ConversationTurn]:
-
         # Construct the messages list from the conversation
         messages = []
         for turn in conversation.turns:
-            messages.append({
-                "role": "user" if turn.speaker == Speaker.USER else "system" if turn.speaker == Speaker.SYSTEM else "assistant" if turn.speaker == Speaker.AI else "user",
-                "content": turn.text,
-            })
+            messages.append(
+                {
+                    "role": "user"
+                    if turn.speaker == Speaker.USER
+                    else "system"
+                    if turn.speaker == Speaker.SYSTEM
+                    else "assistant"
+                    if turn.speaker == Speaker.AI
+                    else "user",
+                    "content": turn.text,
+                }
+            )
 
         # Update temperature and max_tokens
         kwargs["temperature"] = kwargs.get("temperature", 0.9)
@@ -53,20 +55,27 @@ class OpenAIChatEngine(LLMChat):
 
         # Call the OpenAI API
         cp = self._retry_call(
-                model=self._model,
-                messages=messages,
-                n=n_completions,
-                **kwargs,
+            model=self._model,
+            messages=messages,
+            n=n_completions,
+            **kwargs,
         )  # type: ignore
         OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
 
         return [
             ConversationTurn(
                 text=i.message.content,
-                speaker=Speaker.USER if i.message.role == "user" else Speaker.SYSTEM if i.message.role == "system" else Speaker.AI if i.message.role == "assistant" else Speaker.USER,
+                speaker=Speaker.USER
+                if i.message.role == "user"
+                else Speaker.SYSTEM
+                if i.message.role == "system"
+                else Speaker.AI
+                if i.message.role == "assistant"
+                else Speaker.USER,
             )
             for i in cp.choices
         ]
+
 
 @register_engine
 @singleton
@@ -77,6 +86,7 @@ class ChatGPT(OpenAIChatEngine):
     def __init__(self) -> None:
         super().__init__("gpt-3.5-turbo")
 
+
 @register_engine
 @singleton
 class GPT4(OpenAIChatEngine):
@@ -85,6 +95,7 @@ class GPT4(OpenAIChatEngine):
 
     def __init__(self) -> None:
         super().__init__("gpt-4")
+
 
 @register_engine
 @singleton

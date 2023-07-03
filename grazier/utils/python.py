@@ -25,10 +25,13 @@ class chdir(AbstractContextManager):  # noqa: N801
     def __exit__(self, *excinfo) -> None:  # type: ignore
         os.chdir(self._old_cwd.pop())
 
+
 Q = TypeVar("Q", bound=Callable[..., Any])
+
 
 def retry(no_retry_on: Optional[Collection[Type[Exception]]] = None) -> Callable[[Q], Q]:
     """Retry a function if it throws an exception."""
+
     def decorator(func: Q) -> Q:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -46,9 +49,9 @@ def retry(no_retry_on: Optional[Collection[Type[Exception]]] = None) -> Callable
                     continue
 
             if error is not None:
-                raise error # type: ignore
+                raise error  # type: ignore
 
-        return wrapper # type: ignore
+        return wrapper  # type: ignore
 
     return decorator
 

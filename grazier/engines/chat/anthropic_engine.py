@@ -1,4 +1,3 @@
-
 import logging
 import os
 from typing import Any, List
@@ -28,10 +27,7 @@ class AnthropicLMEngine(LLMChat):
             **kwargs,
         )
 
-    def call(
-        self, conversation: Conversation, n_completions: int = 1, **kwargs: Any
-    ) -> List[ConversationTurn]:
-
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         # Some odd anthropic assertions
         if conversation.turns[-1].speaker != Speaker.USER:
             raise AssertionError("Last turn must be a user turn")
@@ -71,13 +67,16 @@ class AnthropicLMEngine(LLMChat):
 @singleton
 class Claude(AnthropicLMEngine):
     name = ("Claude", "claude")
+
     def __init__(self) -> None:
         super().__init__("claude-1")
+
 
 @register_engine
 @singleton
 class Claude100K(AnthropicLMEngine):
     name = ("Claude 100K", "claude-100k")
+
     def __init__(self) -> None:
         super().__init__("claude-1-100k")
 
@@ -86,12 +85,15 @@ class Claude100K(AnthropicLMEngine):
 @singleton
 class ClaudeInstant(AnthropicLMEngine):
     name = ("Claude Instant", "claude-instant")
+
     def __init__(self) -> None:
         super().__init__("claude-instant-1")
+
 
 @register_engine
 @singleton
 class ClaudeInstant100K(AnthropicLMEngine):
     name = ("Claude Instant 100K", "claude-instant-100k")
+
     def __init__(self) -> None:
         super().__init__("claude-instant-1-100k")

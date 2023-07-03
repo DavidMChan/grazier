@@ -23,7 +23,7 @@ def select_device(device: Optional[str] = None) -> Optional[str]:
             # If the user specifies a specific GPU, make sure it exists
             if int(device[5:]) >= torch.cuda.device_count():
                 raise ValueError(f"Invalid device: {device}")
-        elif device == 'api' or device == 'defer':
+        elif device == "api" or device == "defer":
             return None
 
         return device

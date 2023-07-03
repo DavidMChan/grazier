@@ -8,9 +8,10 @@ from grazier.utils.pytorch import select_device
 
 
 class Speaker(Enum):
-    USER = 'user'
-    AI = 'ai'
-    SYSTEM = 'system'
+    USER = "user"
+    AI = "ai"
+    SYSTEM = "system"
+
 
 @dataclass
 class ConversationTurn:
@@ -74,24 +75,18 @@ class Conversation:
         return self
 
 
-
-
 class LLMChat(ABC):
-
     @property
     @abstractmethod
     def name(self) -> Tuple[str, str]:
-        """ Returns a tuple of (Pretty Name, CLI name) of the language model. """
+        """Returns a tuple of (Pretty Name, CLI name) of the language model."""
         raise NotImplementedError()
 
     def __init__(self, device: Optional[str] = None) -> None:
         self.device = select_device(device)
 
     def __call__(
-        self,
-        prompt: Union[Conversation, ConversationTurn, str],
-        n_completions: int = 1,
-        **kwargs: Any
+        self, prompt: Union[Conversation, ConversationTurn, str], n_completions: int = 1, **kwargs: Any
     ) -> List[ConversationTurn]:
         conversation = None
         if isinstance(prompt, str):
@@ -106,14 +101,8 @@ class LLMChat(ABC):
 
         return self.call(conversation, n_completions=n_completions, **kwargs)
 
-
     @abstractmethod
-    def call(
-        self,
-        conversation: Conversation,
-        n_completions: int = 1,
-        **kwargs: Any
-    ) -> List[ConversationTurn]:
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         raise NotImplementedError()
 
     def __repr__(
@@ -121,15 +110,12 @@ class LLMChat(ABC):
     ) -> str:
         return f"{self.__class__.__name__}({self.name[0]})"
 
-
     @classmethod
     def configure(cls, *args, **kwargs):
         raise NotImplementedError("This engine does not support automated configuration.")
 
-
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMChat":
-
         typestr = typestr.lower()
         if typestr in LM_CHAT_ENGINES:
             return LM_CHAT_ENGINES[typestr](**kwargs)  # type: ignore
@@ -142,14 +128,18 @@ class LLMChat(ABC):
     def list_models() -> List[str]:
         return list(LM_CHAT_ENGINES_CLI.keys())
 
+
 LM_CHAT_ENGINES: Dict[str, Type[LLMChat]] = {}
 LM_CHAT_ENGINES_CLI: Dict[str, Type[LLMChat]] = {}
 
 T = TypeVar("T")
+
+
 def register_engine(cls: T) -> T:
     from grazier.engines.llm.chat_engine import wrap_chat_llm_engine
-    LM_CHAT_ENGINES[cls.name[0].lower()] = cls # type: ignore
-    LM_CHAT_ENGINES_CLI[cls.name[1].lower()] = cls # type: ignore
+
+    LM_CHAT_ENGINES[cls.name[0].lower()] = cls  # type: ignore
+    LM_CHAT_ENGINES_CLI[cls.name[1].lower()] = cls  # type: ignore
 
     # Register the engine as an LLM Engine as well
     register_chat_engine(wrap_chat_llm_engine(cls))

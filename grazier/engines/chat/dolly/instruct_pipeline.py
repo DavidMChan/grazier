@@ -24,7 +24,7 @@ PROMPT_FOR_GENERATION_FORMAT = """{intro}
 {instruction}
 {response_key}
 """.format(
-    intro=INTRO_BLURB,
+    intro="{intro_blurb}",
     instruction_key=INSTRUCTION_KEY,
     instruction="{instruction}",
     response_key=RESPONSE_KEY,
@@ -62,12 +62,9 @@ class InstructionTextGenerationPipeline(Pipeline):
             top_k (int, optional): The number of highest probability vocabulary tokens to keep for top-k-filtering.
                 Defaults to 0.
         """
-        super().__init__(*args, do_sample=do_sample, max_new_tokens=max_new_tokens, top_p=top_p, top_k=top_k,
-                         **kwargs)
+        super().__init__(*args, do_sample=do_sample, max_new_tokens=max_new_tokens, top_p=top_p, top_k=top_k, **kwargs)
 
-    def _sanitize_parameters(self,
-                             return_full_text: Optional[bool] = None,
-                             **generate_kwargs):
+    def _sanitize_parameters(self, return_full_text: Optional[bool] = None, **generate_kwargs):
         preprocess_params = {}
 
         # newer versions of the tokenizer configure the response key as a special token.  newer versions still may
@@ -89,10 +86,7 @@ class InstructionTextGenerationPipeline(Pipeline):
                 pass
 
         forward_params = generate_kwargs
-        postprocess_params = {
-            "response_key_token_id": response_key_token_id,
-            "end_key_token_id": end_key_token_id
-        }
+        postprocess_params = {"response_key_token_id": response_key_token_id, "end_key_token_id": end_key_token_id}
 
         if return_full_text is not None:
             postprocess_params["return_full_text"] = return_full_text
@@ -100,7 +94,9 @@ class InstructionTextGenerationPipeline(Pipeline):
         return preprocess_params, forward_params, postprocess_params
 
     def preprocess(self, instruction_text, **generate_kwargs):
-        prompt_text = PROMPT_FOR_GENERATION_FORMAT.format(instruction=instruction_text)
+        prompt_text = PROMPT_FOR_GENERATION_FORMAT.format(
+            instruction=instruction_text, intro_blurb=generate_kwargs.pop("intro_blurb", INTRO_BLURB) or INTRO_BLURB
+        )
         inputs = self.tokenizer(
             prompt_text,
             return_tensors="pt",
@@ -120,6 +116,9 @@ class InstructionTextGenerationPipeline(Pipeline):
         else:
             in_b = input_ids.shape[0]
 
+        # Remove the input_blurb if is't there
+        _ = generate_kwargs.pop("intro_blurb", None)
+
         generated_sequence = self.model.generate(
             input_ids=input_ids.to(self.model.device),
             attention_mask=attention_mask.to(self.model.device) if attention_mask is not None else None,
@@ -137,14 +136,12 @@ class InstructionTextGenerationPipeline(Pipeline):
         return {"generated_sequence": generated_sequence, "input_ids": input_ids, "instruction_text": instruction_text}
 
     def postprocess(self, model_outputs, response_key_token_id, end_key_token_id, return_full_text: bool = False):
-
         generated_sequence = model_outputs["generated_sequence"][0]
         instruction_text = model_outputs["instruction_text"]
 
         generated_sequence: List[List[int]] = generated_sequence.numpy().tolist()
         records = []
         for sequence in generated_sequence:
-
             # The response will be set to this variable if we can identify it.
             decoded = None
 

@@ -1,4 +1,3 @@
-
 import logging
 import os
 from typing import Any, List, Optional, Tuple
@@ -10,11 +9,12 @@ from grazier.utils.python import singleton
 
 
 class LlamaLMEngine(LLMChat):
-    def __init__(self,
-                model: str,
-                weight_root: str,
-                max_new_tokens: int = 128,
-                device: Optional[str] = None,
+    def __init__(
+        self,
+        model: str,
+        weight_root: str,
+        max_new_tokens: int = 128,
+        device: Optional[str] = None,
     ) -> None:
         super().__init__(device=device)
         self._max_new_tokens = max_new_tokens
@@ -29,43 +29,42 @@ class LlamaLMEngine(LLMChat):
     def _extract_last_turn(self, outputs: List[str], last_prompt_is_user: bool) -> List[str]:
         raise NotImplementedError()
 
-
-    def call(
-        self, conversation: Conversation, n_completions: int = 1, **kwargs: Any
-    ) -> List[ConversationTurn]:
-
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         prompt, last_prompt_is_user = self._build_prompt_from_conversation(conversation)
 
         input = self.tokenizer(prompt, return_tensors="pt").input_ids.to(self._generator.device)
 
         # Handle the kwargs
         _params = {
-            'max_new_tokens': kwargs.get("max_new_tokens", kwargs.pop('max_tokens', self._max_new_tokens)),
-            'num_return_sequences': n_completions,
-            'temperature': kwargs.get("temperature", None),
+            "max_new_tokens": kwargs.get("max_new_tokens", kwargs.pop("max_tokens", self._max_new_tokens)),
+            "num_return_sequences": n_completions,
+            "temperature": kwargs.get("temperature", None),
         } | kwargs
 
         outputs = self._generator.generate(
-                input,
-                do_sample=n_completions > 1,
-                **_params,
-            )
+            input,
+            do_sample=n_completions > 1,
+            **_params,
+        )
 
         # Strip the prompt from the output
-        outputs_filtered = outputs[:, input.shape[-1]:]
+        outputs_filtered = outputs[:, input.shape[-1] :]
         # Decode and return the output
-        outputs_filtered = self.tokenizer.batch_decode(outputs_filtered, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        outputs_filtered = self.tokenizer.batch_decode(
+            outputs_filtered, skip_special_tokens=True, clean_up_tokenization_spaces=False
+        )
 
         # Pick out the last continued turn
         # NOTE: This has been removed, since we really do want to return everything.
         # outputs = self._extract_last_turn(outputs_filtered, last_prompt_is_user)
 
-        return [ConversationTurn(text=o, speaker=Speaker.AI if last_prompt_is_user else Speaker.USER) for o in outputs_filtered]
-
+        return [
+            ConversationTurn(text=o, speaker=Speaker.AI if last_prompt_is_user else Speaker.USER)
+            for o in outputs_filtered
+        ]
 
 
 class KoalaLMEngine(LlamaLMEngine):
-
     def _build_prompt_from_conversation(self, conversation: Conversation) -> Tuple[str, bool]:
         # Step 1: Build the prompt from the conversation
         prompt = "BEGINNING OF CONVERSATION: "
@@ -76,7 +75,7 @@ class KoalaLMEngine(LlamaLMEngine):
             elif turn.speaker == Speaker.AI:
                 prompt += "GPT: "
                 prompt += turn.text + " "
-                prompt += '</s>'
+                prompt += "</s>"
 
         # Append the next prompt
         last_prompt_is_user = True
@@ -84,7 +83,9 @@ class KoalaLMEngine(LlamaLMEngine):
             prompt += "GPT: "
             last_prompt_is_user = True
         else:
-            logging.warning("The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective.")
+            logging.warning(
+                "The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective."
+            )
             prompt += "USER: "
             last_prompt_is_user = False
 
@@ -93,8 +94,8 @@ class KoalaLMEngine(LlamaLMEngine):
     def _extract_last_turn(self, outputs: List[str], last_prompt_is_user: bool) -> List[str]:
         return [o.split("GPT:" if last_prompt_is_user else "USER:")[0].strip() for o in outputs]
 
-class Vicuna11LMEngine(LlamaLMEngine):
 
+class Vicuna11LMEngine(LlamaLMEngine):
     def _build_prompt_from_conversation(self, conversation: Conversation) -> Tuple[str, bool]:
         # Step 1: Build the prompt from the conversation
         prompt = ""
@@ -103,7 +104,9 @@ class Vicuna11LMEngine(LlamaLMEngine):
                 if idx == 0:
                     prompt += f"{turn.text} "
                 else:
-                    logging.warning("Tried to add a system turn to the conversation at index != 0. This is not supported by the Vicuna 1.1 style model.")
+                    logging.warning(
+                        "Tried to add a system turn to the conversation at index != 0. This is not supported by the Vicuna 1.1 style model."
+                    )
 
             if turn.speaker == Speaker.USER:
                 prompt += "USER: "
@@ -111,7 +114,7 @@ class Vicuna11LMEngine(LlamaLMEngine):
             elif turn.speaker == Speaker.AI:
                 prompt += "ASSISTANT: "
                 prompt += turn.text + " "
-                prompt += '</s>'
+                prompt += "</s>"
 
         # Append the next prompt
         last_prompt_is_user = True
@@ -119,7 +122,9 @@ class Vicuna11LMEngine(LlamaLMEngine):
             prompt += "ASSISTANT: "
             last_prompt_is_user = True
         else:
-            logging.warning("The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective.")
+            logging.warning(
+                "The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective."
+            )
             prompt += "USER: "
             last_prompt_is_user = False
 
@@ -128,8 +133,8 @@ class Vicuna11LMEngine(LlamaLMEngine):
     def _extract_last_turn(self, outputs: List[str], last_prompt_is_user: bool) -> List[str]:
         return [o.split("ASSISTANT:" if last_prompt_is_user else "USER:")[0].strip() for o in outputs]
 
-class AlpacaLMEngine(LlamaLMEngine):
 
+class AlpacaLMEngine(LlamaLMEngine):
     def _build_prompt_from_conversation(self, conversation: Conversation) -> Tuple[str, bool]:
         # Step 1: Build the prompt from the conversation
         prompt = ""
@@ -138,7 +143,9 @@ class AlpacaLMEngine(LlamaLMEngine):
                 if idx == 0:
                     prompt += f"{turn.text} "
                 else:
-                    logging.warning("Tried to add a system turn to the conversation at index != 0. This is not supported an Alpaca style model.")
+                    logging.warning(
+                        "Tried to add a system turn to the conversation at index != 0. This is not supported an Alpaca style model."
+                    )
 
             if turn.speaker == Speaker.USER:
                 prompt += "### Instruction:\n\n "
@@ -146,7 +153,7 @@ class AlpacaLMEngine(LlamaLMEngine):
             elif turn.speaker == Speaker.AI:
                 prompt += "### Response:\n\n "
                 prompt += turn.text + " "
-                prompt += '</s>'
+                prompt += "</s>"
 
         # Append the next prompt
         last_prompt_is_user = True
@@ -154,7 +161,9 @@ class AlpacaLMEngine(LlamaLMEngine):
             prompt += "### Response:\n\n "
             last_prompt_is_user = True
         else:
-            logging.warning("The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective.")
+            logging.warning(
+                "The last turn in the conversation is from the AI, however this model does not (usually) support continuing conversation from the user perspective."
+            )
             prompt += "### Instruction:\n\n "
             last_prompt_is_user = False
 
@@ -168,34 +177,43 @@ class AlpacaLMEngine(LlamaLMEngine):
 @singleton
 class Koala7B(KoalaLMEngine):
     name = ("Koala (7B)", "koala-7B")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_7B", "KOALA_WEIGHTS_ROOT", device=device)
+
 
 @register_engine
 @singleton
 class Koala13BV1(KoalaLMEngine):
     name = ("Koala (13B, v1)", "koala-13B-v1")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_13B_v1", "KOALA_WEIGHTS_ROOT", device=device)
+
 
 @register_engine
 @singleton
 class Koala13BV2(KoalaLMEngine):
     name = ("Koala (13B, v2)", "koala-13B-v2")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_13B_v2", "KOALA_WEIGHTS_ROOT", device=device)
+
 
 @register_engine
 @singleton
 class Vicuna7B(Vicuna11LMEngine):
     name = ("Vicuna (7B)", "vicuna-7B")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("vicuna_7B", "VICUNA_WEIGHTS_ROOT", device=device)
+
 
 @register_engine
 @singleton
 class Vicuna13B(Vicuna11LMEngine):
     name = ("Vicuna (13B)", "vicuna-13B")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("vicuna_13B", "VICUNA_WEIGHTS_ROOT", device=device)
 
@@ -204,5 +222,6 @@ class Vicuna13B(Vicuna11LMEngine):
 @singleton
 class Alpaca13B(AlpacaLMEngine):
     name = ("Alpaca (13B)", "alpaca-13B")
+
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("alpaca_13B", "ALPACA_WEIGHTS_ROOT", device=device)

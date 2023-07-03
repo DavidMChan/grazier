@@ -1,4 +1,3 @@
-
 import logging
 import random
 
@@ -7,14 +6,16 @@ import pytest
 from grazier.engines.llm import LLMEngine
 
 
-@pytest.mark.parametrize("engine", [
-    "llama-7B",
-    "llama-13B",
-    "llama-30B",
-    "llama-60B",
-])
+@pytest.mark.parametrize(
+    "engine",
+    [
+        "llama-7B",
+        "llama-13B",
+        "llama-30B",
+        "llama-60B",
+    ],
+)
 def test_huggingface_llm_engine(engine: str) -> None:
-
     if engine in (
         "llama-13B",
         "llama-30B",

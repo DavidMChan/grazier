@@ -22,6 +22,7 @@ From Huggingface
 - GPT-J (6B) (Completion Engine)
 - Falcon (7B, 40B, rw-1B, rw-7B) (Completion Engine)
 - Dolly (v1 - 6B, v2 - 3B, 7B, 12B) (Chat and Completion Engines)
+- MPT (Instruct - 7B, 30B) (Chat and Completion Engines)
 
 From Facebook (via Huggingface)
 - Llama (7B, 13B, 30B, 65B) (Completion Engine)

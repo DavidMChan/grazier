@@ -1,4 +1,3 @@
-
 import logging
 import random
 
@@ -7,11 +6,7 @@ import pytest
 from grazier.engines.llm import LLMEngine
 
 
-@pytest.mark.parametrize("engine", [
-    "j2-light",
-    "j2-mid",
-    "j2-ultra"
-])
+@pytest.mark.parametrize("engine", ["j2-light", "j2-mid", "j2-ultra"])
 def test_ai21_llm_engine(engine: str) -> None:
     _engine = LLMEngine.from_string(engine)
     random_number = random.randint(0, 100)

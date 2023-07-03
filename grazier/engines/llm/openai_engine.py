@@ -1,4 +1,3 @@
-
 import os
 from abc import abstractmethod
 from typing import Any, List
@@ -19,7 +18,6 @@ class OpenAI:
 
 
 class OpenAICompletionLLMEngine(LLMEngine):
-
     @property
     @abstractmethod
     def cost_per_token(self) -> float:
@@ -27,21 +25,14 @@ class OpenAICompletionLLMEngine(LLMEngine):
 
     def __init__(self, model: str):
         self._model = model
-        super().__init__(device='api')
+        super().__init__(device="api")
 
-    @retry(
-        no_retry_on=(
-            openai.error.AuthenticationError,
-        )
-    )
-    def call(
-        self, prompt: str, n_completions: int = 1, **kwargs: Any
-    ) -> List[str]:
-        cp = openai.Completion.create(
-            model=self._model, prompt=prompt, n=n_completions, **kwargs
-        )  # type: ignore
+    @retry(no_retry_on=(openai.error.AuthenticationError,))
+    def call(self, prompt: str, n_completions: int = 1, **kwargs: Any) -> List[str]:
+        cp = openai.Completion.create(model=self._model, prompt=prompt, n=n_completions, **kwargs)  # type: ignore
         OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
         return [i.text for i in cp.choices]  # type: ignore
+
 
 @register_engine
 @singleton
@@ -52,6 +43,7 @@ class GPT3Davinci3(OpenAICompletionLLMEngine):
     def __init__(self) -> None:
         super().__init__("text-davinci-003")
 
+
 @register_engine
 @singleton
 class GPT3Davinci2(OpenAICompletionLLMEngine):
@@ -60,6 +52,7 @@ class GPT3Davinci2(OpenAICompletionLLMEngine):
 
     def __init__(self) -> None:
         super().__init__("text-davinci-002")
+
 
 @register_engine
 @singleton
@@ -70,6 +63,7 @@ class GPT3Curie(OpenAICompletionLLMEngine):
     def __init__(self) -> None:
         super().__init__("text-curie-001")
 
+
 @register_engine
 @singleton
 class GPT3Babbage(OpenAICompletionLLMEngine):
@@ -78,6 +72,7 @@ class GPT3Babbage(OpenAICompletionLLMEngine):
 
     def __init__(self) -> None:
         super().__init__("text-babbage-001")
+
 
 @register_engine
 @singleton

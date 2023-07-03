@@ -1,4 +1,3 @@
-
 import logging
 
 import pytest
@@ -16,8 +15,8 @@ def test_llama_llm_engine(engine: str) -> None:
     _engine = LLMChat.from_string(engine)
     responses = _engine(conversation)
     for r in responses:
-        assert r.text.strip() != ''
-        if 'Jason' not in r.text:
+        assert r.text.strip() != ""
+        if "Jason" not in r.text:
             logging.warning(f'Name "Jason" not found in response "{r.text}"')
-        if '42' not in r.text:
+        if "42" not in r.text:
             logging.warning(f'Number "42" not found in response "{r.text}"')

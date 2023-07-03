@@ -1,4 +1,3 @@
-
 try:
     from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 except ImportError:
@@ -27,28 +26,21 @@ class VertexLLMEngine(LLMChat):
             "top_k": 40,  # A top_k of 1 means the selected token is the most probable among all tokens.
         } | kwargs
 
-    @sleep_and_retry # type: ignore
-    @limits( # type: ignore
+    @sleep_and_retry  # type: ignore
+    @limits(  # type: ignore
         calls=40, period=60
     )  # This is the default rate limit for Vertex AI (actual rate limit is 60 calls per minute, but we'll be conservative)
     def _rate_limited_model_predict(self, info, **kwargs: Any) -> Any:
         context, examples, prompt = info
-        chat = self._model.start_chat(
-            context=context,
-            examples=examples,
-            **kwargs
-        )
+        chat = self._model.start_chat(context=context, examples=examples, **kwargs)
         response = chat.send_message(prompt).text
 
         return response
 
-    def call(
-        self, conversation: Conversation, n_completions: int = 1, **kwargs: Any
-    ) -> List[ConversationTurn]:
-
+    def call(self, conversation: Conversation, n_completions: int = 1, **kwargs: Any) -> List[ConversationTurn]:
         # Start the chat
         system_turns = [c for c in conversation.turns if c.speaker == Speaker.SYSTEM]
-        context = system_turns[-1].text if system_turns else ''
+        context = system_turns[-1].text if system_turns else ""
         non_system_turns = [c for c in conversation.turns if c.speaker != Speaker.SYSTEM]
 
         # Assert that the non-system turns alternate between the user and the agent
@@ -62,32 +54,35 @@ class VertexLLMEngine(LLMChat):
             assert InputOutputTextPair is not None
             # Build the examples
             examples = [
-                InputOutputTextPair(
-                    input_text=non_system_turns[i].text,
-                    output_text=non_system_turns[i + 1].text
-                ) for i in range(0, len(non_system_turns) - 1, 2)
+                InputOutputTextPair(input_text=non_system_turns[i].text, output_text=non_system_turns[i + 1].text)
+                for i in range(0, len(non_system_turns) - 1, 2)
             ]
         else:
             examples = []
 
         # Normalize kwargs from openai to vertexai (some common parameters are different)
-        kwargs = self._parameters | {
-            "max_output_tokens": kwargs.pop('max_output_tokens', kwargs.pop('max_tokens', 256)),
-            "temperature": kwargs.pop('temperature', 1.0),
-        } | kwargs
-
+        kwargs = (
+            self._parameters
+            | {
+                "max_output_tokens": kwargs.pop("max_output_tokens", kwargs.pop("max_tokens", 256)),
+                "temperature": kwargs.pop("temperature", 1.0),
+            }
+            | kwargs
+        )
 
         return [
-            ConversationTurn(self._rate_limited_model_predict(
-                (context, examples, non_system_turns[-1].text),
-                **kwargs
-            ), speaker=Speaker.AI)  # type: ignore
+            ConversationTurn(
+                self._rate_limited_model_predict((context, examples, non_system_turns[-1].text), **kwargs),
+                speaker=Speaker.AI,
+            )  # type: ignore
             for _ in range(n_completions)
         ]
+
 
 @register_engine
 @singleton
 class PaLMEngine(VertexLLMEngine):
     name = ("PaLM", "palm")
+
     def __init__(self) -> None:
         super().__init__("chat-bison@001")
