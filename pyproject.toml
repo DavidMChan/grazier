@@ -1,6 +1,6 @@
 [project]
 name = 'grazier'
-version = '0.0.4'
+version = '0.0.5'
 description = 'A tool for calling (and calling out to) large language models.'
 authors = [
     {name='David Chan', email='davidchan@berkeley.edu'}
