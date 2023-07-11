@@ -60,20 +60,20 @@ Each of the LLMs may need additional setup, which you can find in the engine set
 
 ## Usage
 
-For completion engines, you can use the `LLMEngine` class:
+For completion engines, it's as simple as:
 ```python
-from grazier import LLMEngine
+import grazier
 
-LLMEngine.list_models()
+grazier.list_models()
 ['gptj-6B', 'gpt2', 'gpt2-med', 'gpt2-lg', 'gpt2-xl', 'distilgpt2', 'gptneo-125M', 'gptneo-1.3B', 'gptneo-2.7B', 'stablelm-3B', 'stablelm-7B', 'opt-125M', 'opt-350M', 'opt-1.3b', 'opt-2.7b', 'opt-6.7b', 'opt-13b', 'opt-30b', 'opt-66b', 'llama-7B', 'llama-13B', 'llama-30B', 'llama-65B', 'gpt3-davinci3', 'gpt3-davinci2', 'gpt3-curie', 'gpt3-babbage', 'gpt3-ada', 'palm']
-gpt2 = LLMEngine.from_string("gpt2")
+gpt2 = grazier.get("gpt2")
 completion = gpt2("I enjoy walking with my cute dog, but sometimes he gets scared and")
 print(completion)
 ```
 
-For chat engines, you can use the `LLMChat` class:
+For chat engines, all you need to do is add the `chat` parameter:
 ```python
-from grazier import LLMChat, Conversation, Speaker
+from grazier import Conversation, Speaker, get, list_models
 
 conversation = Conversation()
 conversation.add_turn("You are a funny person.", speaker=Speaker.SYSTEM)
@@ -81,11 +81,10 @@ conversation.add_turn("Hi, how are you?", speaker=Speaker.USER)
 conversation.add_turn("I am doing well, how about you?", speaker=Speaker.AI)
 conversation.add_turn("What are you planning to do today?", speaker=Speaker.USER)
 
-LLMChat.list_models()
+list_models(chat=True)
 ['claude', 'claude-100k', 'claude-instant', 'claude-instant-100k', 'bard', 'koala-7b', 'koala-13b-v1', 'koala-13b-v2', 'vicuna-7b', 'vicuna-13b', 'alpaca-13b', 'chat-gpt', 'gpt4', 'gpt4-32k', 'stablelm-3b', 'stablelm-7b', 'palm']
-gpt4 = LLMChat.from_string("gpt4")
+gpt4 = get("gpt4", chat=True)
 next_turn = gpt4(conversation)
-
 print(next_turn)
 ```
 
