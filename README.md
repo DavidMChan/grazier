@@ -10,6 +10,7 @@ From OpenAI:
 - GPT-3 (Davinci (v2,v3), Ada, Babbage, Curie) (Completion Engine)
 
 From Anthropic:
+- Claude 2 (Base) (Chat and Completion Engines)
 - Claude (Base, 100K) (Chat and Completion Engines)
 - Claude Instant (Base, 100K) (Chat and Completion Engines)
 

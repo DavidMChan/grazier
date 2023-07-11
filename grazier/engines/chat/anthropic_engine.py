@@ -97,3 +97,12 @@ class ClaudeInstant100K(AnthropicLMEngine):
 
     def __init__(self) -> None:
         super().__init__("claude-instant-1-100k")
+
+
+@register_engine
+@singleton
+class Claude2(AnthropicLMEngine):
+    name = ("Claude 2", "claude-2")
+
+    def __init__(self) -> None:
+        super().__init__("claude-2")

@@ -5,7 +5,7 @@ import pytest
 from grazier.engines.chat import Conversation, LLMChat, Speaker
 
 
-@pytest.mark.parametrize("engine", ["claude-instant"])
+@pytest.mark.parametrize("engine", ["claude-instant", "claude-2"])
 def test_anthropic_chat_engine(engine: str) -> None:
     # Construct a conversation
     conversation = Conversation()
