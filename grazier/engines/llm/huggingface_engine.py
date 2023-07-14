@@ -72,6 +72,10 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
         _cf_class = singleton(_RemoteHFModel)
         return _cf_class  # type: ignore
 
+    @staticmethod
+    def requires_configuration() -> bool:
+        return False
+
 
 @register_engine
 @singleton
@@ -249,6 +253,10 @@ class OPT1x3B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-1.3b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-1.3b")
 
 
 @register_engine

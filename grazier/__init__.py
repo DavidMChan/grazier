@@ -2,9 +2,20 @@
 
 from dotenv import load_dotenv
 from typing import Union, List
+import logging
+
+from rich.logging import RichHandler
 
 __version__ = "0.0.2"
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler(rich_tracebacks=True)],
+)
 
 # Ignore import sorting, since LLMEngine needs to be imported first
 from grazier.engines.llm import LLMEngine  # noqa: E402

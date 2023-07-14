@@ -1,4 +1,6 @@
 import click
+import logging
+from rich.logging import RichHandler
 
 
 @click.group()
@@ -45,3 +47,27 @@ def complete(
 
     _e = LLMEngine.from_string(engine)
     print(_e(prompt, n_completions=2)[0])
+
+
+@main.command()
+@click.argument("engine")
+def configure(
+    engine: str,
+) -> None:
+    """List available engines."""
+    from grazier.engines.chat import LM_CHAT_ENGINES_CLI
+    from grazier.engines.llm import LM_ENGINES_CLI
+
+    if engine.lower() in LM_ENGINES_CLI:
+        LM_ENGINES_CLI[engine.lower()].configure()
+    elif engine.lower() in LM_CHAT_ENGINES_CLI:
+        LM_CHAT_ENGINES_CLI[engine.lower()].configure()
+    else:
+        logging.error(f"Engine {engine} not found.")
+
+
+@main.command()
+def reset_credential_store():
+    from grazier.utils.secrets import reset_credential_store
+
+    reset_credential_store()

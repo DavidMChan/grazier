@@ -3,13 +3,18 @@ from abc import abstractmethod
 from typing import Any, List
 
 import openai
+import logging
 
 from grazier.engines.llm import LLMEngine, register_engine
 from grazier.utils.python import retry, singleton
+from grazier.utils.secrets import get_secret, set_secret
+from rich.prompt import Prompt
 
-# Setup openai api keys
-openai.organization = os.getenv("OPENAI_API_ORG", None)
-openai.api_key = os.getenv("OPENAI_API_KEY", None)
+
+def _setup_api_keys():
+    # Setup openai api keys
+    openai.api_key = get_secret("OPENAI_API_KEY", None)
+    openai.organization = get_secret("OPENAI_API_ORG", None)
 
 
 @singleton
@@ -25,6 +30,9 @@ class OpenAICompletionLLMEngine(LLMEngine):
 
     def __init__(self, model: str):
         self._model = model
+
+        _setup_api_keys()
+
         super().__init__(device="api")
 
     @retry(no_retry_on=(openai.error.AuthenticationError,))
@@ -35,7 +43,28 @@ class OpenAICompletionLLMEngine(LLMEngine):
 
     @staticmethod
     def is_configured() -> bool:
+        _setup_api_keys()
         return openai.api_key is not None
+
+    @staticmethod
+    def configure():
+        if OpenAICompletionLLMEngine.is_configured():
+            reconfigure = Prompt.ask("OpenAI API key is already configured. Reconfigure?", choices=["y", "n"])
+            if reconfigure == "n":
+                logging.info("OpenAI API key already configured.")
+                return
+
+        have_openai_key = Prompt.ask("Do you have an OpenAI API key?", choices=["y", "n"])
+        if have_openai_key == "n":
+            Prompt.ask(
+                "Please follow the instructions here [u cyan]https://www.howtogeek.com/885918/how-to-get-an-openai-api-key/[/u cyan] to obtain an API key.\nWhen you have the key, press enter to continue",
+            )
+
+        openai_key = Prompt.ask("Please enter your OpenAI API key (It will be saved to your platform's secrets store)")
+        set_secret("OPENAI_API_KEY", openai_key.strip())
+
+        # Save the openai api key to the secrets store
+        logging.info("OpenAI API successfully configured.")
 
 
 @register_engine

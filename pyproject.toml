@@ -13,6 +13,10 @@ dependencies=[
     "ratelimit",
     "fire", # For weight_diff.py. TODO: Remove this, replace with click
 
+    # For keyring support
+    "keyring",
+    "keyrings.cryptfile",
+
     # LM Engines
     "openai",
     "anthropic",

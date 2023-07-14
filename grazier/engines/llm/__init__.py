@@ -36,9 +36,19 @@ class LLMEngine(Engine):
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMEngine":
         if typestr in LM_ENGINES:
-            return LM_ENGINES[typestr](**kwargs)  # type: ignore
+            if not LM_ENGINES[typestr].is_configured() and LM_ENGINES[typestr].requires_configuration():
+                raise ValueError(
+                    f"Language model type: {typestr} requires configuration. Please run `grazier configure {typestr}` first."
+                )
+            else:
+                return LM_ENGINES[typestr](**kwargs)  # type: ignore
         elif typestr in LM_ENGINES_CLI:
-            return LM_ENGINES_CLI[typestr](**kwargs)  # type: ignore
+            if not LM_ENGINES_CLI[typestr].is_configured() and LM_ENGINES_CLI[typestr].requires_configuration():
+                raise ValueError(
+                    f"Language model type: {typestr} requires configuration. Please run `grazier configure {typestr}` first."
+                )
+            else:
+                return LM_ENGINES_CLI[typestr](**kwargs)  # type: ignore
 
         logging.info(f"Failed to find local LLM matching {typestr}. Fetching remote LLMs...")
         api = HfApi()

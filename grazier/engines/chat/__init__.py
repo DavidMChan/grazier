@@ -109,9 +109,22 @@ class LLMChat(Engine):
     def from_string(typestr: str, **kwargs: Any) -> "LLMChat":
         typestr = typestr.lower()
         if typestr in LM_CHAT_ENGINES:
-            return LM_CHAT_ENGINES[typestr](**kwargs)  # type: ignore
+            if not LM_CHAT_ENGINES[typestr].is_configured() and LM_CHAT_ENGINES[typestr].requires_configuration():
+                raise ValueError(
+                    f"Language model type: {typestr} requires configuration. Please run `grazier configure {typestr}` first."
+                )
+            else:
+                return LM_CHAT_ENGINES[typestr](**kwargs)  # type: ignore
         elif typestr in LM_CHAT_ENGINES_CLI:
-            return LM_CHAT_ENGINES_CLI[typestr](**kwargs)  # type: ignore
+            if (
+                not LM_CHAT_ENGINES_CLI[typestr].is_configured()
+                and LM_CHAT_ENGINES_CLI[typestr].requires_configuration()
+            ):
+                raise ValueError(
+                    f"Language model type: {typestr} requires configuration. Please run `grazier configure {typestr}` first."
+                )
+            else:
+                return LM_CHAT_ENGINES_CLI[typestr](**kwargs)  # type: ignore
 
         raise ValueError(f"Invalid language model type: {typestr}. Valid types are: {list(LM_CHAT_ENGINES_CLI.keys())}")
 
