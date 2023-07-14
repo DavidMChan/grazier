@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
+from grazier.engines.default import Engine
 from grazier.engines.llm import register_chat_engine
 from grazier.utils.pytorch import select_device
-from grazier.engines.default import Engine
 
 
 class Speaker(Enum):

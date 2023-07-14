@@ -1,7 +1,5 @@
-from typing import Tuple
-
-
 from abc import ABC, abstractmethod
+from typing import Tuple
 
 
 class Engine(ABC):

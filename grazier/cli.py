@@ -1,6 +1,6 @@
-import click
 import logging
-from rich.logging import RichHandler
+
+import click
 from rich import print
 
 

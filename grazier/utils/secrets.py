@@ -1,10 +1,11 @@
-import keyring
-from typing import Optional
-import os
 import logging
+import os
 import platform
-from rich.prompt import Confirm
+from typing import Optional
+
+import keyring
 from keyrings.cryptfile.cryptfile import CryptFileKeyring
+from rich.prompt import Confirm
 
 _SECRET_CACHE = {}
 

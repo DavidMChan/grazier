@@ -11,8 +11,8 @@ from transformers import (
 from transformers.pipelines import PIPELINE_REGISTRY, TextGenerationPipeline, pipeline
 
 from grazier.engines.llm import LLMEngine, register_engine
-from grazier.utils.python import singleton
 from grazier.utils.huggingface import check_huggingface_model_files_are_local
+from grazier.utils.python import singleton
 
 # Some models are too new, and not directly supported by the text-generation pipeline, but do have support for
 # AutoModelForCausalLM. We can register a new pipeline that doesn't check the model type, and use that instead.

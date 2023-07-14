@@ -1,6 +1,7 @@
+import os
+
 from transformers.configuration_utils import cached_file, is_remote_url
 from transformers.utils import CONFIG_NAME
-import os
 
 
 def check_huggingface_model_files_are_local(pretrained_model_name_or_path: str, **kwargs):

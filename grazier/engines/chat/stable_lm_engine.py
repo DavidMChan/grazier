@@ -5,9 +5,9 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
+from grazier.utils.huggingface import check_huggingface_model_files_are_local
 from grazier.utils.python import singleton
 from grazier.utils.pytorch import select_device
-from grazier.utils.huggingface import check_huggingface_model_files_are_local
 
 
 class StopOnTokens(StoppingCriteria):

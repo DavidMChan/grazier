@@ -5,8 +5,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, TFAutoModelForCaus
 from transformers.pipelines import PIPELINE_REGISTRY, pipeline
 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from grazier.utils.python import singleton
 from grazier.utils.huggingface import check_huggingface_model_files_are_local
+from grazier.utils.python import singleton
 
 from .instruct_pipeline import InstructionTextGenerationPipeline
 

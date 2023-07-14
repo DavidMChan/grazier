@@ -1,14 +1,13 @@
-import os
+import logging
 from abc import abstractmethod
 from typing import Any, List
 
 import openai
-import logging
+from rich.prompt import Prompt
 
 from grazier.engines.llm import LLMEngine, register_engine
 from grazier.utils.python import retry, singleton
 from grazier.utils.secrets import get_secret, set_secret
-from rich.prompt import Prompt
 
 
 def _setup_api_keys():
