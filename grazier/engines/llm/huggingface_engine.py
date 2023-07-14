@@ -1,5 +1,6 @@
 import copy
 from typing import Any, List, Optional, Type
+import logging
 
 from transformers import (
     AutoModelForCausalLM,
@@ -74,7 +75,18 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
 
     @staticmethod
     def requires_configuration() -> bool:
-        return False
+        # Check if there's an internet connection, if so, then we need to check if the model is available
+        # locally. If not, then we can't use this engine.
+        import requests
+
+        try:
+            requests.get("https://huggingface.co/")
+            return False
+        except requests.exceptions.ConnectionError:
+            return True
+        except Exception as e:
+            logging.warning(f"Unexpected error when checking if HuggingFace is available: {e}")
+            return True
 
 
 @register_engine

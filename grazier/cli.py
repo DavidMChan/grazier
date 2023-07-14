@@ -21,7 +21,8 @@ def list_engines(
     # Types here are super broken because of the wrapped decorator
     configured_models_llm, unconfigured_models_llm = [], []
     for k, v in sorted(LM_ENGINES_CLI.items()):  # type: ignore
-        engine_is_configured = v.is_configured() and v.requires_configuration()
+        engine_requires_configuration = v.requires_configuration()
+        engine_is_configured = not engine_requires_configuration or v.is_configured()
         if configured and not engine_is_configured:
             continue
         configured_models_llm.append((k, v)) if engine_is_configured else unconfigured_models_llm.append((k, v))
@@ -29,7 +30,8 @@ def list_engines(
     # Types here are super broken because of the wrapped decorator
     configured_models_chat, unconfigured_models_chat = [], []
     for k, v in sorted(LM_CHAT_ENGINES_CLI.items()):  # type: ignore
-        engine_is_configured = v.is_configured() and v.requires_configuration()
+        engine_requires_configuration = v.requires_configuration()
+        engine_is_configured = not engine_requires_configuration or v.is_configured()
         if configured and not engine_is_configured:
             continue
         configured_models_chat.append((k, v)) if engine_is_configured else unconfigured_models_chat.append((k, v))
@@ -37,7 +39,7 @@ def list_engines(
     print("Available Models (Completions API, Configured):")
     print("\n".join([f"\t [green]- {v.name[0]}/{k} [/green]" for k, v in configured_models_llm]))  # type: ignore
     if not configured:
-        print("\n".join([f"\t [red]- {v.name[0]}/{k} [/red]" for k, v in unconfigured_models_llm]))  # type: ignore
+        print("\n".join([f"\t [red]- {v.name[0]}/{k} (Unconfigured) [/red]" for k, v in unconfigured_models_llm]))  # type: ignore
 
     print()
     print("Available Models (Chat API):")
