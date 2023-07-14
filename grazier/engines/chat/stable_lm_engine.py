@@ -7,6 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
 from grazier.utils.python import singleton
 from grazier.utils.pytorch import select_device
+from grazier.utils.huggingface import check_huggingface_model_files_are_local
 
 
 class StopOnTokens(StoppingCriteria):
@@ -115,6 +116,10 @@ class StableLM3B(StableLMChatEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("stabilityai/stablelm-tuned-alpha-3b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("stabilityai/stablelm-tuned-alpha-3b")
+
 
 @register_engine
 @singleton
@@ -123,3 +128,7 @@ class StableLM7B(StableLMChatEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("stabilityai/stablelm-tuned-alpha-7b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("stabilityai/stablelm-tuned-alpha-7b")

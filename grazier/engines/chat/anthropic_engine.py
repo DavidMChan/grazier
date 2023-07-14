@@ -62,6 +62,10 @@ class AnthropicLMEngine(LLMChat):
 
         return [ConversationTurn(text=s.strip(), speaker=Speaker.AI) for s in samples]
 
+    @staticmethod
+    def is_configured() -> bool:
+        return os.getenv("ANTHROPIC_API_KEY", None) is not None
+
 
 @register_engine
 @singleton

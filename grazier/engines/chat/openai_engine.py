@@ -76,6 +76,10 @@ class OpenAIChatEngine(LLMChat):
             for i in cp.choices
         ]
 
+    @staticmethod
+    def is_configured() -> bool:
+        return openai.api_key is not None
+
 
 @register_engine
 @singleton

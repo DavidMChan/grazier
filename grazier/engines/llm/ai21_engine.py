@@ -54,6 +54,10 @@ class AI21CompletionLLMEngine(LLMEngine):
 
         return [c["data"]["text"] for c in response["completions"]]
 
+    @staticmethod
+    def is_configured() -> bool:
+        return ai21.api_key is not None
+
 
 @register_engine
 @singleton

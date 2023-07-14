@@ -1,5 +1,6 @@
 import logging
 import os
+import glob
 from typing import Any, List, Optional, Tuple
 
 from transformers import LlamaForCausalLM, LlamaTokenizer
@@ -62,6 +63,36 @@ class LlamaLMEngine(LLMChat):
             ConversationTurn(text=o, speaker=Speaker.AI if last_prompt_is_user else Speaker.USER)
             for o in outputs_filtered
         ]
+
+    @staticmethod
+    def _is_configured(weight_root: Optional[str], model: str) -> bool:
+        # Check to see if the weights are available in the weight_root
+        if weight_root is None:
+            return False
+        if not os.path.exists(os.path.join(weight_root, model)):
+            return False
+
+        # Check to see if the files are available:
+        files = [
+            "config.json",
+            "pytorch_model.bin.index.json",
+            "tokenizer_config.json",
+            "generation_config.json",
+            "special_tokens_map.json",
+            "tokenizer.model",
+        ]
+
+        # Check to see if at least one model shard is available
+        # pytorch_model-{n_layers + 1}-of-{n_layers + 1}.bin
+        shards = list(glob.glob(os.path.join(weight_root, model, "pytorch_model-*.bin")))
+        if len(shards) == 0:
+            return False
+
+        for file in files:
+            if not os.path.exists(os.path.join(weight_root, model, file)):
+                return False
+
+        return True
 
 
 class KoalaLMEngine(LlamaLMEngine):
@@ -220,6 +251,10 @@ class Koala7B(KoalaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_7B", "KOALA_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("KOALA_WEIGHTS_ROOT", None), "koala_7B")
+
 
 @register_engine
 @singleton
@@ -228,6 +263,10 @@ class Koala13BV1(KoalaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_13B_v1", "KOALA_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("KOALA_WEIGHTS_ROOT", None), "koala_13B_v1")
 
 
 @register_engine
@@ -238,6 +277,10 @@ class Koala13BV2(KoalaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("koala_13B_v2", "KOALA_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("KOALA_WEIGHTS_ROOT", None), "koala_13B_v2")
+
 
 @register_engine
 @singleton
@@ -246,6 +289,10 @@ class Vicuna7B(Vicuna11LMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("vicuna_7B", "VICUNA_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("VICUNA_WEIGHTS_ROOT", None), "vicuna_7B")
 
 
 @register_engine
@@ -256,6 +303,10 @@ class Vicuna13B(Vicuna11LMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("vicuna_13B", "VICUNA_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("VICUNA_WEIGHTS_ROOT", None), "vicuna_13B")
+
 
 @register_engine
 @singleton
@@ -264,6 +315,10 @@ class Alpaca13B(AlpacaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("alpaca_13B", "ALPACA_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALPACA_WEIGHTS_ROOT", None), "alpaca_13B")
 
 
 @register_engine
@@ -274,6 +329,10 @@ class Tulu7B(AllenAILlamaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tulu-7b", "ALLENAI_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "tulu-7b")
+
 
 @register_engine
 @singleton
@@ -282,6 +341,10 @@ class Tulu13B(AllenAILlamaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tulu-13b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "tulu-13b")
 
 
 @register_engine
@@ -292,6 +355,10 @@ class Tulu30B(AllenAILlamaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tulu-30b", "ALLENAI_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "tulu-30b")
+
 
 @register_engine
 @singleton
@@ -300,6 +367,10 @@ class Tulu65B(AllenAILlamaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tulu-65b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "tulu-65b")
 
 
 @register_engine
@@ -310,6 +381,10 @@ class OIShareGPT7B(AllenAILlamaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("open-instruct-sharegpt-7b", "ALLENAI_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "open-instruct-sharegpt-7b")
+
 
 @register_engine
 @singleton
@@ -318,6 +393,10 @@ class OIShareGPT13B(AllenAILlamaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("open-instruct-sharegpt-13b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "open-instruct-sharegpt-13b")
 
 
 @register_engine
@@ -328,6 +407,10 @@ class OIShareGPT30B(AllenAILlamaLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("open-instruct-sharegpt-30b", "ALLENAI_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "open-instruct-sharegpt-30b")
+
 
 @register_engine
 @singleton
@@ -336,3 +419,7 @@ class OIShareGPT65B(AllenAILlamaLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("open-instruct-sharegpt-65b", "ALLENAI_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return LlamaLMEngine._is_configured(os.environ.get("ALLENAI_WEIGHTS_ROOT", None), "open-instruct-sharegpt-65b")

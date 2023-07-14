@@ -1,5 +1,6 @@
 import os
 from typing import Any, List, Optional
+import glob
 
 from transformers import LlamaForCausalLM, LlamaTokenizer
 
@@ -45,6 +46,36 @@ class HuggingFaceLlamaLMEngine(LLMEngine):
 
         return outputs
 
+    @staticmethod
+    def _is_configured(weight_root: str, model: str) -> bool:
+        # Check to see if the weights are available in the weight_root
+        if weight_root is None:
+            return False
+        if not os.path.exists(os.path.join(weight_root, model)):
+            return False
+
+        # Check to see if the files are available:
+        files = [
+            "config.json",
+            "pytorch_model.bin.index.json",
+            "tokenizer_config.json",
+            "generation_config.json",
+            "special_tokens_map.json",
+            "tokenizer.model",
+        ]
+
+        # Check to see if at least one model shard is available
+        # pytorch_model-{n_layers + 1}-of-{n_layers + 1}.bin
+        shards = list(glob.glob(os.path.join(weight_root, model, "pytorch_model-*.bin")))
+        if len(shards) == 0:
+            return False
+
+        for file in files:
+            if not os.path.exists(os.path.join(weight_root, model, file)):
+                return False
+
+        return True
+
 
 @register_engine
 @singleton
@@ -53,6 +84,10 @@ class Llama7B(HuggingFaceLlamaLMEngine):
 
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("7B", "LLAMA_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return HuggingFaceLlamaLMEngine._is_configured(os.environ.get("LLAMA_WEIGHTS_ROOT", "."), "7B")
 
 
 @register_engine
@@ -63,6 +98,10 @@ class Llama13B(HuggingFaceLlamaLMEngine):
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("13B", "LLAMA_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return HuggingFaceLlamaLMEngine._is_configured(os.environ.get("LLAMA_WEIGHTS_ROOT", "."), "13B")
+
 
 @register_engine
 @singleton
@@ -72,6 +111,10 @@ class Llama30B(HuggingFaceLlamaLMEngine):
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("30B", "LLAMA_WEIGHTS_ROOT", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return HuggingFaceLlamaLMEngine._is_configured(os.environ.get("LLAMA_WEIGHTS_ROOT", "."), "30B")
+
 
 @register_engine
 @singleton
@@ -80,3 +123,7 @@ class Llama65B(HuggingFaceLlamaLMEngine):
 
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("65B", "LLAMA_WEIGHTS_ROOT", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return HuggingFaceLlamaLMEngine._is_configured(os.environ.get("LLAMA_WEIGHTS_ROOT", "."), "65B")

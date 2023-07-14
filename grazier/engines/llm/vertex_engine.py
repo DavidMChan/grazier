@@ -44,6 +44,25 @@ class VertexLLMEngine(LLMEngine):
 
         return [self._rate_limited_model_predict(prompt, **kwargs).text for _ in range(n_completions)]  # type: ignore
 
+    @staticmethod
+    def is_configured() -> bool:
+        # Check to see if the Vertex AI SDK is installed, and if so, if the user has configured their credentials.
+        if TextGenerationModel is None:
+            return False
+
+        # Check to see if the user has configured their google cloud credentials.
+        try:
+            from google.auth import default
+        except ImportError:
+            return False
+
+        try:
+            default()
+        except Exception:
+            return False
+
+        return True
+
 
 @register_engine
 @singleton

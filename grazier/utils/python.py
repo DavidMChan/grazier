@@ -72,6 +72,12 @@ class _SingletonWrapper(Generic[T]):
             self._instance = self.__wrapped__(*args, **kwargs)
         return self._instance
 
+    # Pass class methods/attributes through to the wrapped class
+    def __getattr__(self, attr: str) -> Any:
+        if hasattr(self.__wrapped__, attr):
+            return getattr(self.__wrapped__, attr)
+        raise AttributeError(f"{self.__wrapped__.__name__} has no attribute {attr}")
+
 
 def singleton(cls: Type[S]) -> _SingletonWrapper[S]:
     return _SingletonWrapper(cls)

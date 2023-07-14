@@ -7,22 +7,31 @@ def main() -> None:
 
 
 @main.command()
-def list_engines() -> None:
+@click.option("--configured", is_flag=True, help="Only list configured engines")
+def list_engines(
+    configured: bool,
+) -> None:
     """List available engines."""
     from grazier.engines.chat import LM_CHAT_ENGINES_CLI
     from grazier.engines.llm import LM_ENGINES_CLI
 
-    print("Available LLM engines (Completion):")
+    print("Available Models (Completions API):")
 
     # Types here are super broken because of the wrapped decorator
     for k, v in sorted(LM_ENGINES_CLI.items()):  # type: ignore
-        print(f"\t - {v.name[0]}/{k}")  # type: ignore
+        engine_is_configured = v.is_configured()
+        if configured and not engine_is_configured:
+            continue
+        print(f"\t - {v.name[0]}/{k} (Configured: {engine_is_configured})")  # type: ignore
 
-    print("Available LLM engines (Chat):")
+    print("Available Models (Chat API):")
     # Types here are super broken because of the wrapped decorator
     # Types here are super broken because of the wrapped decorator
     for k, v in sorted(LM_CHAT_ENGINES_CLI.items()):  # type: ignore
-        print(f"\t - {v.name[0]}/{k}")  # type: ignore
+        engine_is_configured = v.is_configured()
+        if configured and not engine_is_configured:
+            continue
+        print(f"\t - {v.name[0]}/{k} (Configured: {engine_is_configured})")  # type: ignore
 
 
 @main.command()

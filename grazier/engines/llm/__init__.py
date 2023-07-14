@@ -5,15 +5,10 @@ from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 from huggingface_hub import HfApi, ModelFilter
 
 from grazier.utils.pytorch import select_device
+from grazier.engines.default import Engine
 
 
-class LLMEngine(ABC):
-    @property
-    @abstractmethod
-    def name(self) -> Tuple[str, str]:
-        """Returns a tuple of (Pretty Name, CLI name) of the language model."""
-        raise NotImplementedError()
-
+class LLMEngine(Engine):
     def __init__(self, device: Optional[str] = None) -> None:
         self.device = select_device(device)
 
@@ -37,10 +32,6 @@ class LLMEngine(ABC):
         self,
     ) -> str:
         return f"{self.__class__.__name__}({self.name[0]})"
-
-    @classmethod
-    def configure(cls, *args, **kwargs):
-        raise NotImplementedError("This engine does not support automated configuration.")
 
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMEngine":

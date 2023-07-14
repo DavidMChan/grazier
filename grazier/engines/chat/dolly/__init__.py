@@ -6,6 +6,7 @@ from transformers.pipelines import PIPELINE_REGISTRY, pipeline
 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
 from grazier.utils.python import singleton
+from grazier.utils.huggingface import check_huggingface_model_files_are_local
 
 from .instruct_pipeline import InstructionTextGenerationPipeline
 
@@ -76,6 +77,10 @@ class DollyV23B(DollyEngine):
             device=device,
         )
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("databricks/dolly-v2-3b")
+
 
 @register_engine
 @singleton
@@ -87,6 +92,10 @@ class DollyV27B(DollyEngine):
             model="databricks/dolly-v2-7b",
             device=device,
         )
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("databricks/dolly-v2-7b")
 
 
 @register_engine
@@ -100,6 +109,10 @@ class DollyV212B(DollyEngine):
             device=device,
         )
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("databricks/dolly-v2-12b")
+
 
 @register_engine
 @singleton
@@ -111,6 +124,10 @@ class DollyV16B(DollyEngine):
             model="databricks/dolly-v1-6b",
             device=device,
         )
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("databricks/dolly-v1-6b")
 
 
 @register_engine
@@ -124,6 +141,10 @@ class MPT7BInstruct(DollyEngine):
             device=device,
         )
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("mosaicml/mpt-7b-instruct")
+
 
 @register_engine
 @singleton
@@ -135,3 +156,7 @@ class MPT30BInstruct(DollyEngine):
             model="mosaicml/mpt-30b-instruct",
             device=device,
         )
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("mosaicml/mpt-30b-instruct")

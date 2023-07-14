@@ -12,6 +12,7 @@ from transformers.pipelines import PIPELINE_REGISTRY, TextGenerationPipeline, pi
 
 from grazier.engines.llm import LLMEngine, register_engine
 from grazier.utils.python import singleton
+from grazier.utils.huggingface import check_huggingface_model_files_are_local
 
 # Some models are too new, and not directly supported by the text-generation pipeline, but do have support for
 # AutoModelForCausalLM. We can register a new pipeline that doesn't check the model type, and use that instead.
@@ -80,6 +81,10 @@ class GPTJ6B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("EleutherAI/gpt-j-6B", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("EleutherAI/gpt-j-6B")
+
 
 @register_engine
 @singleton
@@ -88,6 +93,10 @@ class GPT2(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("gpt2", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("gpt2")
 
 
 @register_engine
@@ -98,6 +107,10 @@ class GPT2Med(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("gpt2-medium", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("gpt2-medium")
+
 
 @register_engine
 @singleton
@@ -106,6 +119,10 @@ class GPT2Lg(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("gpt2-large", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("gpt2-large")
 
 
 @register_engine
@@ -116,6 +133,10 @@ class GPT2XL(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("gpt2-xl", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("gpt2-xl")
+
 
 @register_engine
 @singleton
@@ -124,6 +145,10 @@ class DistilGPT2(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("distilgpt2", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("distilgpt2")
 
 
 @register_engine
@@ -134,6 +159,10 @@ class GPTNeo125M(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("EleutherAI/gpt-neo-125M", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("EleutherAI/gpt-neo-125M")
+
 
 @register_engine
 @singleton
@@ -142,6 +171,10 @@ class GPTNeo1B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("EleutherAI/gpt-neo-1.3B", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("EleutherAI/gpt-neo-1.3B")
 
 
 @register_engine
@@ -152,6 +185,10 @@ class GPTNeo2B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("EleutherAI/gpt-neo-2.7B", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("EleutherAI/gpt-neo-2.7B")
+
 
 @register_engine
 @singleton
@@ -160,6 +197,10 @@ class StableLMBase3B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("stabilityai/stablelm-base-alpha-3b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("stabilityai/stablelm-base-alpha-3b")
 
 
 @register_engine
@@ -170,6 +211,10 @@ class StableLMBase7B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = "defer") -> None:
         super().__init__("stabilityai/stablelm-base-alpha-7b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("stabilityai/stablelm-base-alpha-7b")
+
 
 @register_engine
 @singleton
@@ -179,6 +224,10 @@ class OPT125M(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-125m", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-125m")
+
 
 @register_engine
 @singleton
@@ -187,6 +236,10 @@ class OPT350M(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-350m", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-350m")
 
 
 @register_engine
@@ -206,6 +259,10 @@ class OPT2x7B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-2.7b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-2.7b")
+
 
 @register_engine
 @singleton
@@ -214,6 +271,10 @@ class OPT6x7B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-6.7b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-6.7b")
 
 
 @register_engine
@@ -224,6 +285,10 @@ class OPT13B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-13b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-13b")
+
 
 @register_engine
 @singleton
@@ -232,6 +297,10 @@ class OPT30B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-30b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-30b")
 
 
 @register_engine
@@ -242,6 +311,10 @@ class OPT66B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("facebook/opt-66b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("facebook/opt-66b")
+
 
 @register_engine
 @singleton
@@ -250,6 +323,10 @@ class Falcon40B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tiiuae/falcon-40b", device=device)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("tiiuae/falcon-40b")
 
 
 @register_engine
@@ -260,6 +337,10 @@ class Falcon7B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tiiuae/falcon-7b", device=device)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("tiiuae/falcon-7b")
+
 
 @register_engine
 @singleton
@@ -269,6 +350,10 @@ class FalconRW7B(HuggingFaceTextGenerationLMEngine):
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tiiuae/falcon-rw-7b", device=device, override_check_models=True)
 
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("tiiuae/falcon-rw-7b")
+
 
 @register_engine
 @singleton
@@ -277,3 +362,7 @@ class FalconRW1B(HuggingFaceTextGenerationLMEngine):
 
     def __init__(self, device: Optional[str] = None) -> None:
         super().__init__("tiiuae/falcon-rw-1b", device=device, override_check_models=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("tiiuae/falcon-rw-1b")

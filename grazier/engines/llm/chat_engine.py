@@ -28,4 +28,16 @@ def wrap_chat_llm_engine(cls) -> Type[LLMEngine]:  # type: ignore
             conversation.add_turn(prompt, speaker=Speaker.USER)
             return [x.text for x in self._engine.call(conversation, n_completions=n_completions, **kwargs)]
 
+        @staticmethod
+        def is_configured() -> bool:
+            return cls.is_configured()
+
+        @staticmethod
+        def requires_configuration() -> bool:
+            return cls.requires_configuration()
+
+        @staticmethod
+        def configure(*args, **kwargs) -> None:
+            cls.configure(*args, **kwargs)
+
     return _WrappedEngine

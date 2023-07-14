@@ -304,3 +304,7 @@ class BardEngine(LLMChat):
             outputs.append(self._chatbot.ask(new_prompt)["content"])
 
         return [ConversationTurn(speaker=Speaker.AI, text=output) for output in outputs]
+
+    @staticmethod
+    def is_configured() -> bool:
+        return os.environ.get("GOOGLE_BARD_SESSION_ID", None) is not None

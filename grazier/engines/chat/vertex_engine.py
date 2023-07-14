@@ -78,6 +78,25 @@ class VertexLLMEngine(LLMChat):
             for _ in range(n_completions)
         ]
 
+    @staticmethod
+    def is_configured() -> bool:
+        # Check to see if the Vertex AI SDK is installed, and if so, if the user has configured their credentials.
+        if ChatModel is None or InputOutputTextPair is None:
+            return False
+
+        # Check to see if the user has configured their google cloud credentials.
+        try:
+            from google.auth import default
+        except ImportError:
+            return False
+
+        try:
+            default()
+        except Exception:
+            return False
+
+        return True
+
 
 @register_engine
 @singleton

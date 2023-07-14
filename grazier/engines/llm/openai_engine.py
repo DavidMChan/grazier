@@ -33,6 +33,10 @@ class OpenAICompletionLLMEngine(LLMEngine):
         OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
         return [i.text for i in cp.choices]  # type: ignore
 
+    @staticmethod
+    def is_configured() -> bool:
+        return openai.api_key is not None
+
 
 @register_engine
 @singleton
