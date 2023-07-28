@@ -115,7 +115,7 @@ class ChatGPT(OpenAIChatEngine):
     name = ("Chat GPT", "chat-gpt")
     cost_per_token = 0.002 / 1000
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("gpt-3.5-turbo")
 
 
@@ -125,7 +125,7 @@ class GPT4(OpenAIChatEngine):
     name = ("GPT-4", "gpt4")
     cost_per_token = 0.03 / 1000
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("gpt-4")
 
 
@@ -135,5 +135,5 @@ class GPT432K(OpenAIChatEngine):
     name = ("GPT-4 32K", "gpt4-32k")
     cost_per_token = 0.06 / 1000
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("gpt-4-32k")

@@ -72,7 +72,7 @@ class GPT3Davinci3(OpenAICompletionLLMEngine):
     cost_per_token = 0.02 / 1000
     name = ("GPT-3 Davinci", "gpt3-davinci3")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("text-davinci-003")
 
 
@@ -82,7 +82,7 @@ class GPT3Davinci2(OpenAICompletionLLMEngine):
     cost_per_token = 0.03 / 1000
     name = ("GPT-3 Davinci", "gpt3-davinci2")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("text-davinci-002")
 
 
@@ -92,7 +92,7 @@ class GPT3Curie(OpenAICompletionLLMEngine):
     cost_per_token = 0.002 / 1000
     name = ("GPT-3 Curie", "gpt3-curie")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("text-curie-001")
 
 
@@ -102,7 +102,7 @@ class GPT3Babbage(OpenAICompletionLLMEngine):
     cost_per_token = 0.02 / 1000
     name = ("GPT-3 Babbage", "gpt3-babbage")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("text-babbage-001")
 
 
@@ -112,5 +112,5 @@ class GPT3Ada(OpenAICompletionLLMEngine):
     cost_per_token = 0.02 / 1000
     name = ("GPT-3 Ada", "gpt3-ada")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("text-ada-001")

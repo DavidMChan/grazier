@@ -72,7 +72,7 @@ class AnthropicLMEngine(LLMChat):
 class Claude(AnthropicLMEngine):
     name = ("Claude", "claude")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("claude-1")
 
 
@@ -81,7 +81,7 @@ class Claude(AnthropicLMEngine):
 class Claude100K(AnthropicLMEngine):
     name = ("Claude 100K", "claude-100k")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("claude-1-100k")
 
 
@@ -90,7 +90,7 @@ class Claude100K(AnthropicLMEngine):
 class ClaudeInstant(AnthropicLMEngine):
     name = ("Claude Instant", "claude-instant")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("claude-instant-1")
 
 
@@ -99,7 +99,7 @@ class ClaudeInstant(AnthropicLMEngine):
 class ClaudeInstant100K(AnthropicLMEngine):
     name = ("Claude Instant 100K", "claude-instant-100k")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("claude-instant-1-100k")
 
 
@@ -108,5 +108,5 @@ class ClaudeInstant100K(AnthropicLMEngine):
 class Claude2(AnthropicLMEngine):
     name = ("Claude 2", "claude-2")
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__("claude-2")
