@@ -42,6 +42,10 @@ class OpenFlamingoILMEngine(ILMEngine):
     def call(self, image: Image, prompt: Optional[str] = None, n_completions: int = 1, **kwargs: Any) -> List[str]:
         if prompt is None:
             prompt = "<image>A photo of"
+        if "<image>" not in prompt:
+            prompt = "<image>" + prompt
+        if prompt.count("<image>") > 1:
+            raise ValueError("Prompt must contain at most one <image> token.")
 
         processed_image = (
             torch.cat(
@@ -153,6 +157,7 @@ class OpenFlamingo4B(OpenFlamingoILMEngine):
     @staticmethod
     def is_configured() -> bool:
         return True
+
 
 @register_engine
 @singleton
