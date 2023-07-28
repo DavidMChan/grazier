@@ -80,7 +80,7 @@ def write_json(text, path):
         json.dump(text, f)
 
 
-def write_model(model_path, input_base_path, model_size):
+def write_model(model_path, input_base_path, model_size):  # noqa: PLR0915
     os.makedirs(model_path, exist_ok=True)
     tmp_model_path = os.path.join(model_path, "tmp")
     os.makedirs(tmp_model_path, exist_ok=True)

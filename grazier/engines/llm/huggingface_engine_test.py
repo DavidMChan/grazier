@@ -1,8 +1,8 @@
 import logging
 import random
-import torch
 
 import pytest
+import torch
 
 from grazier.engines.llm import LLMEngine
 

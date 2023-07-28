@@ -57,7 +57,7 @@ class LLMEngine(Engine):
         api = HfApi()
         models = list(api.list_models(filter=ModelFilter(model_name=typestr, task="text-generation")))
         if len(models) > 0:
-            return HuggingFaceTextGenerationLMEngine.from_hub_model(typestr)(**kwargs)
+            return HuggingFaceTextGenerationLMEngine.from_hub_model(typestr)(**kwargs)  # noqa: F405
 
         raise ValueError(f"Invalid language model type: {typestr}")
 

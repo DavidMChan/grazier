@@ -1,16 +1,15 @@
 import copy
-from typing import Any, List, Optional, Type
 import logging
+from typing import Any, List, Optional, Type
 
 import torch
-
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
+    BitsAndBytesConfig,
     TFAutoModelForCausalLM,
     is_tf_available,
     is_torch_available,
-    BitsAndBytesConfig,
 )
 from transformers.pipelines import PIPELINE_REGISTRY, TextGenerationPipeline, pipeline
 
@@ -427,7 +426,7 @@ class FalconRW1B(HuggingFaceTextGenerationLMEngine):
 
 @register_engine
 @singleton
-class H2OGPT_GM_OASST1_EN_2048_FALCON7B(HuggingFaceTextGenerationLMEngine):
+class H2OGPT_GM_OASST1_EN_2048_FALCON7B(HuggingFaceTextGenerationLMEngine):  # noqa: N801
     name = ("H2OGPT_GM_OASST1_EN_2048_FALCON7B", "h2ogpt-gm-oasst1-en-2048-falcon-7b")
 
     def __init__(self, device: Optional[str] = None) -> None:

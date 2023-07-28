@@ -24,6 +24,7 @@ dependencies=[
     "google-cloud-aiplatform[pipelines]",
     "ai21",
     "GoogleBard",
+    "open-flamingo",
 
     # Local LM Engines
     "torch>=1.13.0",
@@ -33,6 +34,10 @@ dependencies=[
     "accelerate",
     "einops",
     "scipy",
+
+    # Image engines
+    "pillow",
+
 
 ]
 license = { file = "LICENSE" }

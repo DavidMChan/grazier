@@ -135,7 +135,9 @@ class InstructionTextGenerationPipeline(Pipeline):
         instruction_text = model_inputs.pop("instruction_text")
         return {"generated_sequence": generated_sequence, "input_ids": input_ids, "instruction_text": instruction_text}
 
-    def postprocess(self, model_outputs, response_key_token_id, end_key_token_id, return_full_text: bool = False):
+    def postprocess(  # noqa: PLR0912
+        self, model_outputs, response_key_token_id, end_key_token_id, return_full_text: bool = False
+    ):
         generated_sequence = model_outputs["generated_sequence"][0]
         instruction_text = model_outputs["instruction_text"]
 
