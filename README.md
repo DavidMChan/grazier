@@ -2,7 +2,7 @@
 
 Grazier is a Python library for easily calling large language models from a unified API.
 
-## Supported Large Language Models
+## Supported Large Models
 
 From OpenAI:
 - GPT-4 (Base, 32K) (Chat and Completion Engines)
@@ -47,6 +47,10 @@ From AllenAI (via Huggingface)
 From AI21
 - Jurassic 2 (Light, Mid, Ultra) (Completion Engines)
 
+Image/Language Models:
+- Blip2 (2.7B, 6.7B) (Image + Text Engine)
+- Open Flamingo (3B, 4B, 9B) (Image + Text Engine)
+
 
 ## Installation
 
@@ -56,7 +60,6 @@ pip install grazier
 ```
 
 Each of the LLMs may need additional setup, which you can find in the engine setup section below.
-
 
 
 ## Usage
@@ -72,7 +75,7 @@ completion = gpt2("I enjoy walking with my cute dog, but sometimes he gets scare
 print(completion)
 ```
 
-For chat engines, all you need to do is add the `chat` parameter:
+For chat engines, all you need to do is add the `type="chat"` parameter:
 ```python
 from grazier import Conversation, Speaker, get, list_models
 
@@ -82,13 +85,27 @@ conversation.add_turn("Hi, how are you?", speaker=Speaker.USER)
 conversation.add_turn("I am doing well, how about you?", speaker=Speaker.AI)
 conversation.add_turn("What are you planning to do today?", speaker=Speaker.USER)
 
-list_models(chat=True)
+list_models(type="chat")
 ['claude', 'claude-100k', 'claude-instant', 'claude-instant-100k', 'bard', 'koala-7b', 'koala-13b-v1', 'koala-13b-v2', 'vicuna-7b', 'vicuna-13b', 'alpaca-13b', 'chat-gpt', 'gpt4', 'gpt4-32k', 'stablelm-3b', 'stablelm-7b', 'palm']
-gpt4 = get("gpt4", chat=True)
+gpt4 = get("gpt4", type="chat")
 next_turn = gpt4(conversation)
 print(next_turn)
 ```
 
+For vision-augmented (image) engines, use `type="image"`
+```python
+import grazier
+from PIL import Image
+
+grazier.list_models(type="image")
+['blip2-opt-2.7b', 'blip2-opt-6.7b', 'blip2-opt-2.7b-coco', 'blip2-opt-6.7b-coco', 'blip2-flan-t5-xl', 'blip2-flan-t5-xxl', 'blip2-flan-t5-xl-coco', 'openflamingo-3b-vitl-mpt1b', 'openflamingo-3b-vitl-mpt1b-dolly', 'openflamingo-9b-vitl-mpt7b', 'openflamingo-4b-vitl-rpj3b']
+blip2 = grazier.get("blip2-opt-2.7b", type="image")
+
+image = Image.open('test_data/dog.jpg')
+completion = blip2(image, "A photo of")
+
+print(completion)
+```
 
 ## Individual Engine Setup
 
