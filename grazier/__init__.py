@@ -19,7 +19,7 @@ logging.basicConfig(
 
 # Ignore import sorting, since LLMEngine needs to be imported first
 from grazier.engines.llm import LLMEngine  # noqa: E402
-from grazier.engines.chat import Conversation, LLMChat, Speaker  # noqa: F401, E402
+from grazier.engines.chat import Conversation, LLMChat, Speaker, ConversationTurn  # noqa: F401, E402
 
 
 def get(name: str, chat: bool = False) -> Union[LLMChat, LLMEngine]:

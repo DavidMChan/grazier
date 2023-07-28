@@ -2,12 +2,15 @@ import copy
 from typing import Any, List, Optional, Type
 import logging
 
+import torch
+
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     TFAutoModelForCausalLM,
     is_tf_available,
     is_torch_available,
+    BitsAndBytesConfig,
 )
 from transformers.pipelines import PIPELINE_REGISTRY, TextGenerationPipeline, pipeline
 
@@ -30,15 +33,47 @@ PIPELINE_REGISTRY.register_pipeline(
 
 
 class HuggingFaceTextGenerationLMEngine(LLMEngine):
-    def __init__(self, model: str, device: Optional[str] = None, override_check_models: bool = False):
+    def __init__(
+        self,
+        model: str,
+        device: Optional[str] = None,
+        override_check_models: bool = False,
+        quantize: bool = False,
+    ):
         super().__init__(device=device)
+
+        # Setup quantization
+        if quantize:
+            nf4_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True,
+                bnb_4bit_compute_dtype=torch.float16,
+            )
+        else:
+            nf4_config = None
+
+        self._model = AutoModelForCausalLM.from_pretrained(
+            model,
+            device_map="auto" if not self.device_specified else None,
+            quantization_config=nf4_config,
+            trust_remote_code=True,
+        )
+        self._tokenizer = AutoTokenizer.from_pretrained(
+            model,
+            trust_remote_code=True,
+            padding_side="left",
+        )
+        self._tokenizer.pad_token_id = self._model.config.eos_token_id or self._tokenizer.eos_token_id
 
         self._generator = pipeline(
             "text-generation" if not override_check_models else "text-generation-no-check-models",
-            model=model,
-            tokenizer=AutoTokenizer.from_pretrained(model),
+            model=self._model,
+            tokenizer=self._tokenizer,
             framework="pt",
-            device=self.device,
+            device=self.device if self.device_specified else None,
+            device_map="auto" if not self.device_specified else None,
+            torch_dtype=torch.float16 if quantize else None,
             trust_remote_code=True,
         )
 
@@ -55,6 +90,8 @@ class HuggingFaceTextGenerationLMEngine(LLMEngine):
         outputs = self._generator(
             prompt,
             do_sample=n_completions > 1,
+            pad_token_id=self._tokenizer.pad_token_id,
+            eos_token_id=self._tokenizer.eos_token_id,
             **_params,
         )
 
@@ -386,3 +423,63 @@ class FalconRW1B(HuggingFaceTextGenerationLMEngine):
     @staticmethod
     def is_configured() -> bool:
         return check_huggingface_model_files_are_local("tiiuae/falcon-rw-1b")
+
+
+@register_engine
+@singleton
+class H2OGPT_GM_OASST1_EN_2048_FALCON7B(HuggingFaceTextGenerationLMEngine):
+    name = ("H2OGPT_GM_OASST1_EN_2048_FALCON7B", "h2ogpt-gm-oasst1-en-2048-falcon-7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("h2oai/h2ogpt-gm-oasst1-en-2048-falcon-7b", device=device, override_check_models=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("h2oai/h2ogpt-gm-oasst1-en-2048-falcon-7b")
+
+    @property
+    def prompt_prefix(self) -> str:
+        return "<|prompt|>"
+
+    @property
+    def prompt_suffix(self) -> str:
+        return "<|endoftext|><|answer|>"
+
+
+@register_engine
+@singleton
+class LLama27B(HuggingFaceTextGenerationLMEngine):
+    name = ("Llama-2 (7B)", "llama-2-7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("meta-llama/Llama-2-7b-hf", device=device, quantize=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("meta-llama/Llama-2-7b-hf")
+
+
+@register_engine
+@singleton
+class LLama213B(HuggingFaceTextGenerationLMEngine):
+    name = ("Llama-2 (13B)", "llama-2-13b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("meta-llama/Llama-2-13b-hf", device=device, quantize=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("meta-llama/Llama-2-13b-hf")
+
+
+@register_engine
+@singleton
+class LLama270B(HuggingFaceTextGenerationLMEngine):
+    name = ("Llama-2 (70B)", "llama-2-70b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("meta-llama/Llama-2-70b-hf", device=device, quantize=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("meta-llama/Llama-2-70b-hf")

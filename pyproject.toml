@@ -1,6 +1,6 @@
 [project]
 name = 'grazier'
-version = '0.0.5'
+version = '0.0.6'
 description = 'A tool for calling (and calling out to) large language models.'
 authors = [
     {name='David Chan', email='davidchan@berkeley.edu'}
@@ -18,18 +18,21 @@ dependencies=[
     "keyrings.cryptfile",
 
     # LM Engines
+    "requests",
     "openai",
     "anthropic",
     "google-cloud-aiplatform[pipelines]",
     "ai21",
+    "GoogleBard",
 
     # Local LM Engines
     "torch>=1.13.0",
     "transformers>=4.30.2",
+    "bitsandbytes",
     "sentencepiece",
     "accelerate",
     "einops",
-    "xformers"
+    "scipy",
 
 ]
 license = { file = "LICENSE" }

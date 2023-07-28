@@ -11,6 +11,7 @@ from grazier.utils.pytorch import select_device
 class LLMEngine(Engine):
     def __init__(self, device: Optional[str] = None) -> None:
         self.device = select_device(device)
+        self.device_specified = device is not None
 
     @property
     def prompt_prefix(self) -> str:
@@ -35,6 +36,8 @@ class LLMEngine(Engine):
 
     @staticmethod
     def from_string(typestr: str, **kwargs: Any) -> "LLMEngine":
+        typestr = typestr.lower()
+
         if typestr in LM_ENGINES:
             if not LM_ENGINES[typestr].is_configured() and LM_ENGINES[typestr].requires_configuration():
                 raise ValueError(

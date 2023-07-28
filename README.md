@@ -27,6 +27,7 @@ From Huggingface
 
 From Facebook (via Huggingface)
 - Llama (7B, 13B, 30B, 65B) (Completion Engine)
+- Llama 2 (7B, 13B, 70B) (Completion Engine)
 - OPT (125M, 350M, 1.3B, 2.7B, 6.7B, 13B, 30B, 66B) (Completion Engine)
 
 From Stanford (via Huggingface)
@@ -138,11 +139,13 @@ export GOOGLE_APPLICATION_CREDENTIALS=<path to your JSON file>
 ```
 
 ### Bard
-For the Bard engine, you will need to get your Bard SESSION_ID.  Get the value of this variable by first going to
-https://bard.google.com/, then log in, press F12 for console, and go to the "Application" tab, then "Cookies",
-then copy the value of the "__Secure-1PSID" cookie. You can then set the environment variable:
+For the Bard engine, you will need to get your Bard __Secure-1PSID and __Secure-1PSIDTS tokens.  Get the value of this
+variable by first going to https://bard.google.com/, then log in, press F12 for console, and go to the "Application" tab,
+then "Cookies", then copy the value of the "__Secure-1PSID" and "__Secure-1PSIDTS" cookies. You can then set the
+environment variables:
 ```bash
-GOOGLE_BARD_SESSION_ID=<your session id>
+BARD__Secure_1PSID=<your session id>
+BARD__Secure_1PSIDTS=<your session id timestamp>
 ```
 
 ### Huggingface Engines
