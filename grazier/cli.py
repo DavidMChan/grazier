@@ -2,11 +2,18 @@ import logging
 
 import click
 from rich import print
+from rich.logging import RichHandler
 
 
 @click.group()
 def main() -> None:
-    pass
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(message)s",
+        datefmt="[%X]",
+        handlers=[RichHandler(rich_tracebacks=True)],
+    )
 
 
 @main.command()

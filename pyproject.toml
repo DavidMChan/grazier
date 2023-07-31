@@ -24,7 +24,7 @@ dependencies=[
     "google-cloud-aiplatform[pipelines]",
     "ai21",
     "GoogleBard",
-    "open-flamingo",
+    # "open-flamingo",
 
     # Local LM Engines
     "torch>=1.13.0",
@@ -71,6 +71,10 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Human Machine Interfaces",
   "Typing :: Typed"
 ]
+
+# Setup the find namespace
+
+
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "mypy"]
@@ -153,3 +157,6 @@ ignore = ["E501", "PLR0913", "N806", "N803", "N812", "N802"]
 
 [tool.pyright]
 reportGeneralTypeIssues = false
+
+[tool.setuptools]
+packages = ["grazier"]

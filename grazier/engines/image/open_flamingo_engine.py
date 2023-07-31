@@ -3,11 +3,15 @@ from typing import Any, List, Optional
 
 import torch
 from huggingface_hub import hf_hub_download
-from open_flamingo import create_model_and_transforms
 from PIL import Image
 
 from grazier.engines.image import ILMEngine, register_engine
 from grazier.utils.python import singleton
+
+try:
+    from open_flamingo import create_model_and_transforms
+except ImportError:
+    create_model_and_transforms = None
 
 
 class OpenFlamingoILMEngine(ILMEngine):
@@ -21,6 +25,9 @@ class OpenFlamingoILMEngine(ILMEngine):
         quantize: bool = False,
     ) -> None:
         super().__init__(device=device)
+
+        if create_model_and_transforms is None:
+            raise ImportError("OpenFlamingo is not installed. Please install it with `pip install open-flamingo`.")
 
         if quantize:
             logging.warning("Quantization is not supported for OpenFlamingo models.")
