@@ -482,3 +482,16 @@ class LLama270B(HuggingFaceTextGenerationLMEngine):
     @staticmethod
     def is_configured() -> bool:
         return check_huggingface_model_files_are_local("meta-llama/Llama-2-70b-hf")
+
+
+@register_engine
+@singleton
+class Mistral7B(HuggingFaceTextGenerationLMEngine):
+    name = ("Mistral (7B)", "mistral-7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("mistralai/Mistral-7B-v0.1", device=device, quantize=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("mistralai/Mistral-7B-v0.1")

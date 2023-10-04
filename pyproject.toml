@@ -1,47 +1,45 @@
 [project]
 name = 'grazier'
-version = '0.0.6'
+version = '0.0.7'
 description = 'A tool for calling (and calling out to) large language models.'
-authors = [
-    {name='David Chan', email='davidchan@berkeley.edu'}
-]
-dependencies=[
-    # Base dependencies
-    "click",
-    "rich",
-    "python-dotenv",
-    "ratelimit",
-    "fire", # For weight_diff.py. TODO: Remove this, replace with click
+authors = [{ name = 'David Chan', email = 'davidchan@berkeley.edu' }]
+dependencies = [
+  # Base dependencies
+  "click",
+  "rich",
+  "python-dotenv",
+  "ratelimit",
+  "fire",          # For weight_diff.py. TODO: Remove this, replace with click
 
-    # For keyring support
-    "keyring",
-    "keyrings.cryptfile",
+  # For keyring support
+  "keyring",
+  "keyrings.cryptfile",
 
-    # LM Engines
-    "requests",
-    "openai",
-    "anthropic",
-    "google-cloud-aiplatform[pipelines]",
-    "ai21",
-    "GoogleBard",
-    # "open-flamingo",
+  # LM Engines
+  "requests",
+  "openai",
+  "anthropic",
+  "google-cloud-aiplatform[pipelines]",
+  "ai21",
+  "GoogleBard",
+  "open-flamingo",
 
-    # Local LM Engines
-    "torch>=1.13.0",
-    "transformers>=4.30.2",
-    "bitsandbytes",
-    "sentencepiece",
-    "accelerate",
-    "einops",
-    "scipy",
+  # Local LM Engines
+  "torch>=1.13.0",
+  "transformers>=4.34",
+  "bitsandbytes",
+  "sentencepiece",
+  "accelerate",
+  "einops",
+  "scipy",
 
-    # Image engines
-    "pillow",
+  # Image engines
+  "pillow",
 
 
 ]
 license = { file = "LICENSE" }
-requires-python=">=3.8.0"
+requires-python = ">=3.8.0"
 readme = "README.md"
 keywords = [
   "language-models",
@@ -69,11 +67,10 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Scientific/Engineering :: Human Machine Interfaces",
-  "Typing :: Typed"
+  "Typing :: Typed",
 ]
 
 # Setup the find namespace
-
 
 
 [project.optional-dependencies]
@@ -89,10 +86,9 @@ documentation = "https://github.com/DavidMChan/grazier"
 repository = "https://github.com/DavidMChan/grazier"
 
 
-
 [tool.black]
 line-length = 120
-target_version =['py38']
+target_version = ['py38']
 exclude = '''
 
 (
@@ -112,7 +108,7 @@ exclude = '''
 '''
 
 [tool.isort]
-sections="FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 
 
 [build-system]
@@ -129,29 +125,29 @@ ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 120
-target-version='py38'
+target-version = 'py38'
 select = ["E", "F", "I", "N", "UP", "PL", "NPY", "RUF", "C90"]
 exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
 ]
 ignore = ["E501", "PLR0913", "N806", "N803", "N812", "N802"]
 

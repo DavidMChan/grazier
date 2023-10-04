@@ -78,6 +78,8 @@ class OpenFlamingoILMEngine(ILMEngine):
             max_new_tokens=kwargs.get("max_new_tokens", kwargs.pop("max_tokens", 128)),
             num_return_sequences=n_completions,
             do_sample=n_completions > 1,
+            pad_token_id=self._tokenizer.pad_token_id,
+            eos_token_id=self._tokenizer.eos_token_id,
             **kwargs,
         )
 

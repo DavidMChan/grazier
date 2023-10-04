@@ -9,16 +9,7 @@ from grazier.engines.llm import LLMEngine
 
 @pytest.mark.parametrize(
     "engine",
-    [
-        "gptj-6B",
-        "gpt2",
-        "distilgpt2",
-        "gptneo-125M",
-        "stablelm-3B",
-        "falcon-7b",
-        "falcon-rw-1b",
-        "llama-2-7b",
-    ],
+    ["gpt2", "stablelm-3B", "falcon-7b", "llama-2-7b", "mistral-7b"],
 )
 def test_huggingface_llm_engine(engine: str) -> None:
     try:

@@ -75,6 +75,20 @@ class Conversation:
             self.turns.extend(other.turns)
         return self
 
+    def to_huggingface_chat(self) -> List[Dict[str, str]]:
+        role_map = {
+            Speaker.USER: "user",
+            Speaker.AI: "assistant",
+            Speaker.SYSTEM: "system",
+        }
+        return [
+            {
+                "role": role_map[turn.speaker],
+                "content": turn.text,
+            }
+            for turn in self.turns
+        ]
+
 
 class LLMChat(Engine):
     def __init__(self, device: Optional[str] = None) -> None:
@@ -154,6 +168,7 @@ def register_engine(cls: T) -> T:
 from grazier.engines.chat.anthropic_engine import *  # noqa: F403, E402
 from grazier.engines.chat.bard_engine import *  # noqa: F403, E402
 from grazier.engines.chat.dolly import *  # noqa: F403, E402
+from grazier.engines.chat.huggingface_engine import *  # noqa: F403, E402
 from grazier.engines.chat.llama_engine import *  # noqa: F403, E402
 from grazier.engines.chat.openai_engine import *  # noqa: F403, E402
 from grazier.engines.chat.stable_lm_engine import *  # noqa: F403, E402

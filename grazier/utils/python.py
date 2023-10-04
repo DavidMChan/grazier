@@ -1,5 +1,6 @@
 import functools
 import hashlib
+import logging
 import os
 import time
 from contextlib import AbstractContextManager
@@ -45,6 +46,7 @@ def retry(no_retry_on: Optional[Collection[Type[Exception]]] = None) -> Callable
 
                     # Backoff and try again
                     time.sleep(backoff)
+                    logging.warn(f"Retrying {func.__name__} after {backoff}s due to {e}")
                     error = e
                     continue
 
