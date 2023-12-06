@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from typing import Union, List, Any
 import logging
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 load_dotenv()
 
 
