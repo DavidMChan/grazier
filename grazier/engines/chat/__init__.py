@@ -172,4 +172,4 @@ from grazier.engines.chat.llama_engine import *  # noqa: F403, E402
 from grazier.engines.chat.openai_engine import *  # noqa: F403, E402
 from grazier.engines.chat.stable_lm_engine import *  # noqa: F403, E402
 from grazier.engines.chat.vertex_engine import *  # noqa: F403, E402
-from grazier.engines.chat.huggingface_engine import *  # noqa: F403, E402
+from grazier.engines.chat.hf_engine import *  # noqa: F403, E402
