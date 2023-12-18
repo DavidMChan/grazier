@@ -2,26 +2,22 @@ import logging
 from abc import abstractmethod
 from typing import Any, List
 
-import openai
+from openai import AuthenticationError, OpenAI
 from rich.prompt import Prompt
 
 from grazier.engines.chat import Conversation, ConversationTurn, LLMChat, Speaker, register_engine
-from grazier.engines.llm.openai_engine import OpenAI
+from grazier.engines.llm.openai_engine import OpenAIStats
 from grazier.utils.python import retry, singleton
 from grazier.utils.secrets import get_secret, set_secret
-
-
-def _setup_api_keys():
-    # Setup openai api keys
-    openai.api_key = get_secret("OPENAI_API_KEY", None)
-    openai.organization = get_secret("OPENAI_API_ORG", None)
 
 
 class OpenAIChatEngine(LLMChat):
     def __init__(self, model: str):
         super().__init__(device="api")
-
-        _setup_api_keys()
+        self.api = OpenAI(
+            api_key=get_secret("OPENAI_API_KEY", None),
+            organization=get_secret("OPENAI_API_ORG", None),
+        )
 
         self._model = model
 
@@ -30,9 +26,9 @@ class OpenAIChatEngine(LLMChat):
     def cost_per_token(self) -> float:
         raise NotImplementedError()
 
-    @retry(no_retry_on=(openai.error.AuthenticationError,))
+    @retry(no_retry_on=(AuthenticationError,TypeError,))
     def _retry_call(self, *args: Any, **kwargs: Any) -> Any:
-        return openai.ChatCompletion.create(*args, **kwargs)  # type: ignore
+        return self.api.chat.completions.create(*args, **kwargs)  # type: ignore
 
     def call(
         self,
@@ -67,7 +63,7 @@ class OpenAIChatEngine(LLMChat):
             n=n_completions,
             **kwargs,
         )  # type: ignore
-        OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
+        OpenAIStats.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
 
         return [
             ConversationTurn(
@@ -85,8 +81,7 @@ class OpenAIChatEngine(LLMChat):
 
     @staticmethod
     def is_configured() -> bool:
-        _setup_api_keys()
-        return openai.api_key is not None
+        return get_secret("OPENAI_API_KEY", None) is not None
 
     @staticmethod
     def configure():
@@ -118,6 +113,14 @@ class ChatGPT(OpenAIChatEngine):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__("gpt-3.5-turbo")
 
+@register_engine
+@singleton
+class GPT35Turbo(OpenAIChatEngine):
+    name = ("GPT 3.5 Turbo", "gpt-3.5-turbo")
+    cost_per_token = 0.002 / 1000
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__("gpt-3.5-turbo")
 
 @register_engine
 @singleton

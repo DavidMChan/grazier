@@ -1,8 +1,9 @@
 import logging
 from abc import abstractmethod
 from typing import Any, List
+from warnings import warn
 
-import openai
+from openai import AuthenticationError, OpenAI
 from rich.prompt import Prompt
 
 from grazier.engines.llm import LLMEngine, register_engine
@@ -10,14 +11,8 @@ from grazier.utils.python import retry, singleton
 from grazier.utils.secrets import get_secret, set_secret
 
 
-def _setup_api_keys():
-    # Setup openai api keys
-    openai.api_key = get_secret("OPENAI_API_KEY", None)
-    openai.organization = get_secret("OPENAI_API_ORG", None)
-
-
 @singleton
-class OpenAI:
+class OpenAIStats:
     USAGE = 0.0
 
 
@@ -29,21 +24,24 @@ class OpenAICompletionLLMEngine(LLMEngine):
 
     def __init__(self, model: str):
         self._model = model
-
-        _setup_api_keys()
+        self.api = OpenAI(
+            api_key=get_secret("OPENAI_API_KEY", None),
+            organization=get_secret("OPENAI_API_ORG", None),
+        )
+        warn("The OpenAI Completions AI is deprecated. Please use the OpenAI Chat AI instead (i.e. grazier.get('model', type='chat')).", DeprecationWarning)
 
         super().__init__(device="api")
 
-    @retry(no_retry_on=(openai.error.AuthenticationError,))
+    @retry(no_retry_on=(AuthenticationError,))
     def call(self, prompt: str, n_completions: int = 1, **kwargs: Any) -> List[str]:
-        cp = openai.Completion.create(model=self._model, prompt=prompt, n=n_completions, **kwargs)  # type: ignore
-        OpenAI.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
+
+        cp = self.api.completions.create(model=self._model, prompt=prompt, n=n_completions, **kwargs)  # type: ignore
+        OpenAIStats.USAGE += int(cp.usage.total_tokens) * self.cost_per_token
         return [i.text for i in cp.choices]  # type: ignore
 
     @staticmethod
     def is_configured() -> bool:
-        _setup_api_keys()
-        return openai.api_key is not None
+        return get_secret("OPENAI_API_KEY", None) is not None
 
     @staticmethod
     def configure():

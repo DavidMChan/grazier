@@ -1,6 +1,6 @@
 [project]
 name = 'grazier'
-version = '0.1.1'
+version = '0.1.2'
 description = 'A tool for calling (and calling out to) large language models.'
 authors = [{ name = 'David Chan', email = 'davidchan@berkeley.edu' }]
 dependencies = [
@@ -17,7 +17,7 @@ dependencies = [
 
   # LM Engines
   "requests",
-  "openai",
+  "openai>=1.4",
   "anthropic",
   "google-cloud-aiplatform[pipelines]",
   "ai21",
@@ -26,12 +26,13 @@ dependencies = [
 
   # Local LM Engines
   "torch>=1.13.0",
-  "transformers>=4.34",
+  "transformers>=4.36",
   "bitsandbytes",
   "sentencepiece",
-  "accelerate",
+  "accelerate>=1.2",
   "einops",
   "scipy",
+  "accelerate",
 
   # Image engines
   "pillow",

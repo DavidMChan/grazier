@@ -495,3 +495,16 @@ class Mistral7B(HuggingFaceTextGenerationLMEngine):
     @staticmethod
     def is_configured() -> bool:
         return check_huggingface_model_files_are_local("mistralai/Mistral-7B-v0.1")
+
+
+@register_engine
+@singleton
+class Mixtral8x7B(HuggingFaceTextGenerationLMEngine):
+    name = ("Mistral (7B)", "mixtral-8x7b")
+
+    def __init__(self, device: Optional[str] = None) -> None:
+        super().__init__("mistralai/Mixtral-8x7B-v0.1", device=device, quantize=True)
+
+    @staticmethod
+    def is_configured() -> bool:
+        return check_huggingface_model_files_are_local("mistralai/Mixtral-8x7B-v0.1")
